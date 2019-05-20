@@ -1,0 +1,25 @@
+{
+  "name": "@botanicus/blog-generator",
+  "version": "0.0.1",
+  "description": "Generates JSON files from blog posts written in markdown. These JSON files works as an API if served via a static server, such as Nginx and are meant to be consumed from JavaScript front-end.",
+  "main": "index.js",
+  "scripts": {
+    "test": "test test/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/botanicus/blog-generator.js.git"
+  },
+  "keywords": [
+    "blog",
+    "blogging",
+    "JSON",
+    "API"
+  ],
+  "author": "James C Russell",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/botanicus/blog-generator.js/issues"
+  },
+  "homepage": "https://github.com/botanicus/blog-generator.js#readme"
+}
