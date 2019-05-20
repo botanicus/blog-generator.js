@@ -4,7 +4,7 @@
   "description": "Generates JSON files from blog posts written in markdown. These JSON files works as an API if served via a static server, such as Nginx and are meant to be consumed from JavaScript front-end.",
   "main": "index.js",
   "scripts": {
-    "test": "test test/"
+    "test": "ava"
   },
   "repository": {
     "type": "git",
@@ -24,5 +24,19 @@
   "homepage": "https://github.com/botanicus/blog-generator.js#readme",
   "devDependencies": {
     "ava": "^1.4.1"
+  },
+  "ava": {
+    "require": [
+      "esm"
+    ],
+    "babel": false,
+    "extensions": [
+      "js",
+      "mjs"
+    ]
+  },
+  "dependencies": {
+    "jsdom": "^15.1.0",
+    "showdown": "^1.9.0"
   }
 }

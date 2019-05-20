@@ -1,23 +1,7 @@
-import assert from 'assert'
-import { JSDOM } from 'jsdom'
-
-class Post {
-  constructor(slug, markdown_with_header) {
-    this.slug = slug
-    this.markdown_with_header = markdown_with_header
-  }
-
-  get title() {
-    return this.document.css('h1').innerText()
-  }
-}
+import { ensure } from './utils.mjs'
+import Post from './parser.mjs'
 
 const createdAt = new Date()
-
-function ensure(object, message) {
-  assert(object, message)
-  return object
-}
 
 function getPostObject(data) {
   return function (data) {
