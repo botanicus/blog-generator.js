@@ -21,5 +21,8 @@
   "bugs": {
     "url": "https://github.com/botanicus/blog-generator.js/issues"
   },
-  "homepage": "https://github.com/botanicus/blog-generator.js#readme"
+  "homepage": "https://github.com/botanicus/blog-generator.js#readme",
+  "devDependencies": {
+    "ava": "^1.4.1"
+  }
 }
