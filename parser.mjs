@@ -11,6 +11,16 @@ export default class Post {
     this.markdown_with_header = markdown_with_header
   }
 
+  /* This is required by the addCreatedAt() function in post.mjs. */
+  set createdAt(value) {
+    console.log(`~ Using ${value} as createdAt`)
+    this.createdAt = value
+  }
+
+  get createdAt() {
+    return this.createdAt
+  }
+
   get title() {
     return this.document.css('h1').innerText()
   }
