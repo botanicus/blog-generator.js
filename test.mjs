@@ -1,6 +1,8 @@
 import test from 'ava'
 import { getShortPostFromStoredJSON } from './post.mjs'
 
+import './fs_actions_test.mjs'
+
 test('foo', t => {
   t.pass()
 })
