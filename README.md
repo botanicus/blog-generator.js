@@ -1,7 +1,10 @@
 # About
 
-[![NPM version][NV img]][NPM version]
-[![Build status][BS img]][Build status]
+[![Build status][BS img]][Build status url]
+![MIT license][license img]
+[![NPM package][NPM version img]][NPM url]
+![dependencies][dependencies img]
+[![GitHub issues][issues img]][issues url]
 
 # Format
 
@@ -25,8 +28,12 @@ npm install blog-generator
 
 # Usage
 
-[NPM version]: https://rubygems.org/gems/
-[Build status]: https://travis-ci.org/botanicus/
+[Build status url]: https://travis-ci.org/botanicus/blog-generator.js
+[issues url]: https://github.com/botanicus/blog-generator.js/issues
+[NPM url]: https://www.npmjs.com/package/@botanicus/blog-generator
 
-[NV img]: https://badge.fury.io/rb/.svg
-[BS img]: https://travis-ci.org/botanicus/.svg?branch=master
+[BS img]: https://travis-ci.org/botanicus/blog-generator.js.svg?branch=master
+[NPM version img]: https://img.shields.io/npm/v/@botanicus/blog-generator.svg
+[license img]: http://img.shields.io/badge/license-MIT-brightgreen.svg
+[issues img]: https://img.shields.io/github/issues/botanicus/blog-generator.js.svg
+[dependencies img]: https://img.shields.io/david/botanicus/blog-generator.js.svg
