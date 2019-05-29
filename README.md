@@ -3,7 +3,19 @@
 [![NPM version][NV img]][NPM version]
 [![Build status][BS img]][Build status]
 
+# Format
 
+```md
+tags: ["React.js", "Ruby on Rails"]
+---
+
+# Post title
+*Excerpt, one paragraph.*
+
+## h1-level title
+
+### h2-level title
+```
 
 # Installation
 
