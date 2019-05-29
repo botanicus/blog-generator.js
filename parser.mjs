@@ -1,5 +1,6 @@
-import { ensure } from './utils.mjs'
+import { ensure, escapeRegExp } from './utils.mjs'
 import jsdom from 'jsdom'
+const { JSDOM } = jsdom
 import showdown from 'showdown'
 import yaml from 'js-yaml'
 
@@ -20,37 +21,82 @@ export default class Post {
   }
 
   get header() {
-    if (this.markdownWithHeader.match(/\n---\s*\n/)) {
-      const lines = this.markdownWithHeader.split("\n")
-      const endIndex = lines.indexOf('---') /* TODO: This should allow trailing whitespace. */
-      const yamlData = lines.slice(0, endIndex).join("\n")
-      return yaml.safeLoad(yamlData)
-    } else {
-      return {}
-    }
+    const yamlData = this.split()[0]
+    return yamlData ? yaml.safeLoad(yamlData) : {}
   }
 
-  parse() {
+  get tags() {
+    return this.header.tags
+  }
+
+  get rawBody() {
+    return this.split()[1]
+  }
+
+  split() {
+    if (!this.markdownWithHeader.match(/\n---\s*\n/)) {
+      return [null, this.markdownWithHeader]
+    }
+
+    const lines = this.markdownWithHeader.split("\n")
+    const endIndex = lines.indexOf('---') /* TODO: This should allow trailing whitespace. */
+    const yamlData = lines.slice(0, endIndex).join("\n")
+    const rawBody = lines.slice(endIndex + 1, lines.length - 1)
+    return [yamlData, rawBody.join("\n").trim()]
+  }
+
+  parseBody() {
     const converter = new showdown.Converter()
-    // console.log(converter)
-    const html      = converter.makeHtml(this.markdownWithHeader)
-    // console.log('')
-    // console.log(html)
-    return new ParsedPost(document)
+    const html = converter.makeHtml(this.rawBody)
+    const dom = JSDOM.fragment(html)
+    return new ParsedPost(dom, this.rawBody)
   }
 }
 
 // Post
+//   #slug
+//   #createdAt
 //   #header
-//   #title
-//   #body
+//   #rawBody
+//   #parseBody()
+//     #title
+//     #excerpt
+//     #body
 
-export class ParsedPost {
-  constructor(document) {
-    this.document = document
+class ParsedPost {
+  constructor(dom, rawBody) {
+    this.document = ensure(dom, 'ParsedPost: dom is required')
+    this.rawBody = ensure(rawBody, 'ParsedPost: rawBody is required')
   }
 
   get title() {
-    return this.document.css('h1').innerText()
+    const expectedTitleNode = this.document.childNodes[0]
+    this.validate(expectedTitleNode, 'H1')
+    return expectedTitleNode.textContent
+  }
+
+  get excerpt() {
+    const expectedExcerptNode = this.document.childNodes[2]
+    this.validate(expectedExcerptNode, 'P')
+    const expectedEmNode = expectedExcerptNode.childNodes[0]
+    this.validate(expectedEmNode, 'EM')
+    return expectedEmNode.innerHTML
+  }
+
+  get body() {
+    const pattern = new RegExp(`${escapeRegExp(this.title)}|${escapeRegExp(this.excerpt)}`)
+    return this.rawBody.split("\n").filter((line) => !line.match(pattern)).join("\n").trim()
+    // TODO
+    // h2 -> h1 (probably?)
+  }
+
+  validate(node, expectedTagName) {
+    if (!node) {
+      throw `Document doesn't contain tag ${expectedTagName} on expected position`
+    }
+
+    if (node.tagName !== expectedTagName) {
+      throw `The first element is supposed to be ${expectedTagName} tag, was ${node.tagName} ${node}`
+    }
   }
 }

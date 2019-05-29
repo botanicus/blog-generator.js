@@ -53,26 +53,59 @@ describe('Post', () => {
   })
 
   describe('#header', () => {
-    it('parses the YAML header', () => {
-      const post = new Post('hello-world', markdownWithHeader)
-      assert.deepEqual(post.header, {tags: ['React.js']})
-    })
-
     it('returns an empty object if there is no header', () => {
       const post = new Post('hello-world', markdownWithoutHeader)
       assert.deepEqual(post.header, {})
     })
+
+    it('parses the YAML header', () => {
+      const post = new Post('hello-world', markdownWithHeader)
+      assert.deepEqual(post.header, {tags: ['React.js']})
+    })
   })
 
-  // describe('#parse', () => {
-  //   it("throws an error if it isn't valid", () => {
-  //     const post = new Post('hello-world', markdownWithHeader)
-  //     assert.throws(() => post.parse(), /TODO/)
-  //   })
+  // TODO: tags
 
-  //   it("returns the parsed document if it's valid", () => {
-  //     const post = new Post('hello-world', markdownWithHeader)
-  //     assert.doesNotThrow(() => post.parse())
-  //   })
-  // })
+  describe('#rawBody', () => {
+    it('parses out the raw body, leaving out the header', () => {
+      const post = new Post('hello-world', markdownWithHeader)
+      assert.deepEqual(post.rawBody, "# Hello world\n\n*Lorem ipsum.*\n\n## First title")
+    })
+
+    it("returns the whole markdown blob if there's no header", () => {
+      const post = new Post('hello-world', markdownWithoutHeader)
+      assert.deepEqual(post.rawBody, markdownWithoutHeader)
+    })
+  })
+
+  describe('#parseBody()', () => {
+    // it("throws an error if it isn't valid", () => {
+    //   const post = new Post('hello-world', markdownWithHeader)
+    //   assert.throws(() => post.parseBody(), /TODO/)
+    // })
+
+    describe('#title', () => {
+      it('returns the main post title', () => {
+        const post = new Post('hello-world', markdownWithHeader)
+        const body = post.parseBody()
+        assert.equal(body.title, 'Hello world')
+      })
+    })
+
+    describe('#excerpt', () => {
+      it('returns the excerpt', () => {
+        const post = new Post('hello-world', markdownWithHeader)
+        const body = post.parseBody()
+        assert.equal(body.excerpt, 'Lorem ipsum.')
+      })
+    })
+
+    describe('#body', () => {
+      it('returns the body', () => {
+        const post = new Post('hello-world', markdownWithHeader)
+        const body = post.parseBody()
+        assert.equal(body.body, '## First title')
+      })
+    })
+  })
 })
