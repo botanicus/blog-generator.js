@@ -1,7 +1,18 @@
 import assert from 'assert'
 import Post from '../parser.mjs';
 
+const markdownWithoutHeader = `
+# Hello world
+
+*Lorem ipsum.*
+
+## First title
+`
+
 const markdownWithHeader = `
+tags: ["React.js"]
+---
+
 # Hello world
 
 *Lorem ipsum.*
@@ -28,4 +39,40 @@ describe('Post', () => {
       assert(post.markdownWithHeader)
     })
   })
+
+  describe('#createdAt', () => {
+    it('cannot be set to a non-date objects', () => {
+      const post = new Post('hello-world', markdownWithHeader)
+      assert.throws(() => post.createdAt = '', /accepts only date-like objects/)
+    })
+
+    it('can be set to a date-like object', () => {
+      const post = new Post('hello-world', markdownWithHeader)
+      assert.doesNotThrow(() => post.createdAt = new Date())
+    })
+  })
+
+  describe('#header', () => {
+    it('parses the YAML header', () => {
+      const post = new Post('hello-world', markdownWithHeader)
+      assert.deepEqual(post.header, {tags: ['React.js']})
+    })
+
+    it('returns an empty object if there is no header', () => {
+      const post = new Post('hello-world', markdownWithoutHeader)
+      assert.deepEqual(post.header, {})
+    })
+  })
+
+  // describe('#parse', () => {
+  //   it("throws an error if it isn't valid", () => {
+  //     const post = new Post('hello-world', markdownWithHeader)
+  //     assert.throws(() => post.parse(), /TODO/)
+  //   })
+
+  //   it("returns the parsed document if it's valid", () => {
+  //     const post = new Post('hello-world', markdownWithHeader)
+  //     assert.doesNotThrow(() => post.parse())
+  //   })
+  // })
 })
