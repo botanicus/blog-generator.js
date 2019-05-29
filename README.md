@@ -19,12 +19,16 @@ tags: ["React.js", "Ruby on Rails"]
 ## h1-level title
 
 ### h2-level title
+
+![cute kitty images](cute_kitty.png)
+
+Images are expected to be in the same directory, without any subdirectories. The system will place them where they belong.
 ```
 
 # Installation
 
 ```ruby
-npm install blog-generator
+npm install -g @botanicus/blog-generator
 ```
 
 # Usage
