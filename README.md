@@ -8,11 +8,12 @@
 
 # Format
 
-```md
+```markdown
 tags: ["React.js", "Ruby on Rails"]
 ---
 
 # Post title
+
 *Excerpt, one paragraph.*
 
 ## h1-level title

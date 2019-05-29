@@ -9,4 +9,4 @@ notifications:
 cache: yarn
 
 script:
-  - yarn test test/**/*.mjs
+  - sh -c 'yarn test test/**/*.mjs'
