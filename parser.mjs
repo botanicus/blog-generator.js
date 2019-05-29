@@ -6,9 +6,9 @@ import showdown from 'showdown'
 // text      = '# hello, markdown!',
 // html      = converter.makeHtml(text);
 export default class Post {
-  constructor(slug, markdown_with_header) {
-    this.slug = slug
-    this.markdown_with_header = markdown_with_header
+  constructor(slug, markdownWithHeader) {
+    this.slug = ensure(slug, 'Post: slug is required')
+    this.markdownWithHeader = ensure(markdownWithHeader, 'Post: markdownWithHeader is required')
   }
 
   /* This is required by the addCreatedAt() function in post.mjs. */
