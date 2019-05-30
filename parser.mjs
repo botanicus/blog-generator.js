@@ -26,12 +26,25 @@ export default class Post {
   }
 
   get tags() {
-    return this.header.tags
+    return this.header.tags || []
   }
 
   get rawBody() {
     return this.split()[1]
   }
+
+  /*
+    It seems that showdown never throws an error,
+    therefore this method should never throw.
+  */
+  parseBody() {
+    const converter = new showdown.Converter()
+    const html = converter.makeHtml(this.rawBody)
+    const dom = JSDOM.fragment(html)
+    return new Body(dom, this.rawBody)
+  }
+
+  /* Private. */
 
   /*
     Note that showdown itself support metadata:
@@ -55,17 +68,6 @@ export default class Post {
     const yamlData = lines.slice(0, endIndex).join("\n")
     const rawBody = lines.slice(endIndex + 1, lines.length - 1)
     return [yamlData, rawBody.join("\n").trim()]
-  }
-
-  /*
-    It seems that showdown never throws an error,
-    therefore this method should never throw.
-  */
-  parseBody() {
-    const converter = new showdown.Converter()
-    const html = converter.makeHtml(this.rawBody)
-    const dom = JSDOM.fragment(html)
-    return new Body(dom, this.rawBody)
   }
 }
 
