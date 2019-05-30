@@ -57,6 +57,10 @@ export default class Post {
     return [yamlData, rawBody.join("\n").trim()]
   }
 
+  /*
+    It seems that showdown never throws an error,
+    therefore this method should never throw.
+  */
   parseBody() {
     const converter = new showdown.Converter()
     const html = converter.makeHtml(this.rawBody)
@@ -97,7 +101,7 @@ class Body {
     }
 
     if (node.tagName !== expectedTagName) {
-      throw `The first element is supposed to be ${expectedTagName} tag, was ${node.tagName} ${node}`
+      throw `The first element is supposed to be ${expectedTagName} tag, was ${node.nodeName} ${node}`
     }
   }
 }

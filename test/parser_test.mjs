@@ -79,10 +79,14 @@ describe('Post', () => {
   })
 
   describe('#parseBody()', () => {
-    /* Note: it seems that showdown never throws an error. */
-
     describe('#title', () => {
-      it('returns the main post title', () => {
+      it("throws an error if there isn't one", () => {
+        const post = new Post('hello-world', 'mrqiczka')
+        const body = post.parseBody()
+        assert.throws(() => body.title, /is supposed to be H1 tag/)
+      })
+
+      it('returns the main post title if there is one', () => {
         const post = new Post('hello-world', markdownWithHeader)
         const body = post.parseBody()
         assert.equal(body.title, 'Hello world')
@@ -90,6 +94,24 @@ describe('Post', () => {
     })
 
     describe('#excerpt', () => {
+      it("throws an error if there isn't one", () => {
+        const post = new Post('hello-world', '# Mrqiczka')
+        const body = post.parseBody()
+        assert.throws(() => body.excerpt, /doesn't contain tag P on expected position/)
+      })
+
+      it("throws an error if there isn't one", () => {
+        const post = new Post('hello-world', "# Mrqiczka\n## Subtitle")
+        const body = post.parseBody()
+        assert.throws(() => body.excerpt, /is supposed to be P tag/)
+      })
+
+      it("throws an error if the excerpt isn't *wrapped*", () => {
+        const post = new Post('hello-world', "# Mrqiczka\nLorem ipsum.")
+        const body = post.parseBody()
+        assert.throws(() => body.excerpt, /is supposed to be EM tag/)
+      })
+
       it('returns the excerpt', () => {
         const post = new Post('hello-world', markdownWithHeader)
         const body = post.parseBody()
@@ -98,7 +120,7 @@ describe('Post', () => {
     })
 
     describe('#body', () => {
-      it('returns the body', () => {
+      it('returns the body without the title and excerpt', () => {
         const post = new Post('hello-world', markdownWithHeader)
         const body = post.parseBody()
         assert.equal(body.body, '## First title')
