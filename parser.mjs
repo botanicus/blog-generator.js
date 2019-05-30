@@ -38,8 +38,8 @@ export default class Post {
       return [null, this.markdownWithHeader]
     }
 
-    const lines = this.markdownWithHeader.split("\n")
-    const endIndex = lines.indexOf('---') /* TODO: This should allow trailing whitespace. */
+    const lines = this.markdownWithHeader.split("\n").map((line) => line.trimRight())
+    const endIndex = lines.indexOf('---')
     const yamlData = lines.slice(0, endIndex).join("\n")
     const rawBody = lines.slice(endIndex + 1, lines.length - 1)
     return [yamlData, rawBody.join("\n").trim()]
@@ -86,8 +86,6 @@ class ParsedPost {
   get body() {
     const pattern = new RegExp(`${escapeRegExp(this.title)}|${escapeRegExp(this.excerpt)}`)
     return this.rawBody.split("\n").filter((line) => !line.match(pattern)).join("\n").trim()
-    // TODO
-    // h2 -> h1 (probably?)
   }
 
   validate(node, expectedTagName) {
