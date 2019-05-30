@@ -1,64 +1,44 @@
-import { ensure } from './utils.mjs'
+/*
+  This is so we have a simple, plain object compatible interface
+  and we can treat it same as the object parsed from the stored JSON.
+*/
 
-const createdAt = new Date()
+import PostParser from './parser.mjs'
 
-function getPostObject() {
-  /* The post is going to be:
-   * - a plain object, if the data comes from a JSON file
-   * - or an instance of Post. */
-  return function (post) {
-    return {
-      title: ensure(post.title, 'getPostObject: title is required'),
-      slug: ensure(post.slug, 'getPostObject: slug is required'),
-      tags: ensure(post.tags, 'getPostObject: tags are required'),
-      excerpt: ensure(post.excerpt, 'getPostObject: excerpt is required'),
-      createdAt: ensure(post.createdAt, 'getPostObject: createdAt is required')
-    }
+export default class Post {
+  constructor(slug, markdownWithHeader) {
+    this.post = new PostParser(slug, markdownWithHeader)
   }
-}
 
-function addCreatedAt(fn) {
-  return function (data) {
-    ensure(!data.createdAt, 'addCreatedAt: data.createdAt must not be defined beforehands')
-    data.createdAt = createdAt.toUTCString()
-    return fn(data)
+  get slug() {
+    return this.post.slug
   }
-}
 
-function addPath (fn) {
-  return function (data) {
-    const post = fn(data)
-    const date = Date.parse(data.createdAt)
-    const timestamp = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
-    console.log(timestamp)
-    post.path = `/posts/${timestamp}-${data.slug}/${data.slug}.json`
-    return post
+  set createdAt(value) {
+    this.post.createdAt = value
   }
-}
 
-function withBody(fn) {
-  return function (data) {
-    ensure(data.body, 'withBody: body is required')
-    const post = fn(data)
-    post.body = data.body
-    return post;
+  get createdAt() {
+    return this.post.createdAt
   }
-}
 
-/* This is to represent i. e. posts/2019-05-19-hello-world/hello-world.json */
-export function getFullPostFromStoredJSON (data) {
-  return withBody(getPostObject())(data)
-}
+  get header() {
+    return this.post.header
+  }
 
-export function getFullPostFromObject (post) {
-  return withBody(addCreatedAt(getPostObject()))(post)
-}
+  get tags() {
+    return this.header.tags || []
+  }
 
-/* This is to represent items from posts.json and tags/*.json */
-export function getShortPostFromStoredJSON (data) {
-  return addPath(getPostObject())(data)
-}
+  get title() {
+    return this.post.parseBody().title
+  }
 
-export function getShortPostFromObject (post) {
-  return addPath(addCreatedAt(getPostObject()))(post)
+  get excerpt() {
+    return this.post.parseBody().excerpt
+  }
+
+  get body() {
+    return this.post.parseBody().body
+  }
 }

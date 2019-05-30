@@ -1,5 +1,5 @@
 import assert from 'assert'
-import Post from '../parser.mjs';
+import Post from '../parser.mjs'
 
 const markdownWithoutHeader = `
 # Hello world
@@ -63,24 +63,6 @@ describe('Post', () => {
       assert.deepEqual(post.header, {tags: ['React.js']})
     })
   })
-
-  describe('#tags', () => {
-    it('returns an empty array if there is no header', () => {
-      const post = new Post('hello-world', markdownWithoutHeader)
-      assert.deepEqual(post.tags, [])
-    })
-
-    it('returns an empty array if there are no tags in the header', () => {
-      const post = new Post('hello-world', `meta: yes\n---\n${markdownWithoutHeader}`)
-      assert.deepEqual(post.tags, [])
-    })
-
-    it('returns an array of the tags', () => {
-      const post = new Post('hello-world', markdownWithHeader)
-      assert.deepEqual(post.tags, ['React.js'])
-    })
-  })
-
 
   describe('#rawBody', () => {
     it('parses out the raw body, leaving out the header', () => {
