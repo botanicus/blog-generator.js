@@ -13,13 +13,13 @@ export default class PostParser {
   }
 
   /* This is required by the addCreatedAt() function in post.mjs. */
-  set createdAt(dateValue) {
-    ensure(dateValue.getMonth, 'Post#createdAt accepts only date-like objects')
-    this._createdAt = dateValue
+  set date(dateValue) {
+    ensure(dateValue.getMonth, 'Post#date accepts only date-like objects')
+    this._date = dateValue
   }
 
-  get createdAt() {
-    return this._createdAt
+  get date() {
+    return this._date
   }
 
   get header() {

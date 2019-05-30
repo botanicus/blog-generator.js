@@ -40,15 +40,15 @@ describe('Post', () => {
     })
   })
 
-  describe('#createdAt', () => {
+  describe('#date', () => {
     it('cannot be set to a non-date objects', () => {
       const post = new Post('hello-world', markdownWithHeader)
-      assert.throws(() => post.createdAt = '', /accepts only date-like objects/)
+      assert.throws(() => post.date = '', /accepts only date-like objects/)
     })
 
     it('can be set to a date-like object', () => {
       const post = new Post('hello-world', markdownWithHeader)
-      assert.doesNotThrow(() => post.createdAt = new Date())
+      assert.doesNotThrow(() => post.date = new Date())
     })
   })
 
