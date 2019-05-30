@@ -1,10 +1,12 @@
+/* Private model, the public API is in post.mjs. */
+
 import { ensure, escapeRegExp } from './utils.mjs'
 import jsdom from 'jsdom'
 const { JSDOM } = jsdom
 import showdown from 'showdown'
 import yaml from 'js-yaml'
 
-export default class Post {
+export default class PostParser {
   constructor(slug, markdownWithHeader) {
     this.slug = ensure(slug, 'Post: slug is required')
     this.markdownWithHeader = ensure(markdownWithHeader, 'Post: markdownWithHeader is required')
@@ -23,10 +25,6 @@ export default class Post {
   get header() {
     const yamlData = this.split()[0]
     return yamlData ? yaml.safeLoad(yamlData) : {}
-  }
-
-  get tags() {
-    return this.header.tags || []
   }
 
   get rawBody() {
