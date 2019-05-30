@@ -14,12 +14,12 @@ export default class Post {
     return this.post.slug
   }
 
-  set createdAt(value) {
-    this.post.createdAt = value
+  set date(value) {
+    this.post.date = value
   }
 
-  get createdAt() {
-    return this.post.createdAt
+  get date() {
+    return this.post.date
   }
 
   get header() {

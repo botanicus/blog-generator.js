@@ -1,6 +1,6 @@
 import { formatLongPostObject, formatShortPostObject} from './format-data-output.mjs'
 import { FileSystemActions, MoveFileAction, FileWriteAction, CreateDirectoryAction } from 'fs-actions'
-import Post from './parser.mjs'
+import Post from './post.mjs'
 
 export function validate (content_directory) {
   return true
@@ -13,6 +13,7 @@ export function validate (content_directory) {
      a) Create output/2019-05-20-hello-world/.
      b) Generate hello-world.json from hello-world.md.
      c) Copy all the images.
+     d) Rewrite the header: add publishedAt.
   4. Generate output/posts.json and output/tags/*.json.
 */
 export function generate (content_directory, output_directory) {
