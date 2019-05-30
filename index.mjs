@@ -15,25 +15,57 @@ import {
 import Post from './post.mjs'
 
 export function validate (contentDirectory) {
+  const posts = loadAllPosts(contentDirectory)
+  // TODO: for each, validate pics etc.
   return true
 }
 
 /*
-  1. Remove everything in the output/ directory.
-  2. Load all the posts from the MD originals.
-  3. For each 2019-05-20-hello-world/:
-     a) Create output/2019-05-20-hello-world/.
-     b) Generate hello-world.json from hello-world.md.
-     c) Copy all the images.
-     d) Rewrite the header: add date.
   4. Generate output/posts.json and output/tags/*.json.
 */
 export function generate (contentDirectory, outputDirectory) {
   const actions = new FileSystemActions()
 
+  /*
+    Remove everything from the output/ directory.
+    Except .git/ and the likes.
+  */
   cleanUpDirectory(outputDirectory, actions)
 
+  const posts = loadAllPosts(contentDirectory)
+  /*
+   Create output/2019-05-20-hello-world/.
+   Generate hello-world.json from hello-world.md.
+   Copy all the images.
+   Rewrite the header: add date.
+  */
+  posts.forEach((post) => {
+    //
+  })
+
+  generateIndex(posts, actions)
+  generateTagIndices(posts, actions)
+
   return actions
+}
+
+function generateIndex (posts, actions) {
+  // TODO
+}
+
+function generateTagIndices (posts, actions) {
+  // TODO
+}
+
+function loadAllPosts (postDirectory) {
+  const postDirectories = fs.readdirSync(postDirectory).
+    filter((path) => fs.statSync(path).isDirectory() && path.match(/^\d{4}-\d{2}\d{2}-/))
+
+  return postDirectories.map((directory) => {
+    const slug = path.replace(/^\d{4}-\d{2}-\d{2}-(.+)\.md$/, '$1')
+    const path = `${postDirectory}/${directory}/${slug}.md`
+    new Post(slug, fs.readFileSync(path))
+  })
 }
 
 function cleanUpDirectory (directory, actions) {
