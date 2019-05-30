@@ -33,6 +33,18 @@ export default class Post {
     return this.split()[1]
   }
 
+  /*
+    Note that showdown itself support metadata:
+
+    const converter = new showdown.Converter({metadata: true})
+    console.log(converter.getMetadata())
+
+    (This requires additional '---' before the metadata block.)
+
+    However this doesn't seem to parse arrays, it escapes them to:
+
+    {tags: '[&quot;React.js&quot;]'}
+  */
   split() {
     if (!this.markdownWithHeader.match(/\n---\s*\n/)) {
       return [null, this.markdownWithHeader]
@@ -49,24 +61,14 @@ export default class Post {
     const converter = new showdown.Converter()
     const html = converter.makeHtml(this.rawBody)
     const dom = JSDOM.fragment(html)
-    return new ParsedPost(dom, this.rawBody)
+    return new Body(dom, this.rawBody)
   }
 }
 
-// Post
-//   #slug
-//   #createdAt
-//   #header
-//   #rawBody
-//   #parseBody()
-//     #title
-//     #excerpt
-//     #body
-
-class ParsedPost {
+class Body {
   constructor(dom, rawBody) {
-    this.document = ensure(dom, 'ParsedPost: dom is required')
-    this.rawBody = ensure(rawBody, 'ParsedPost: rawBody is required')
+    this.document = ensure(dom, 'Body: dom is required')
+    this.rawBody = ensure(rawBody, 'Body: rawBody is required')
   }
 
   get title() {
@@ -88,6 +90,7 @@ class ParsedPost {
     return this.rawBody.split("\n").filter((line) => !line.match(pattern)).join("\n").trim()
   }
 
+  /* Private. */
   validate(node, expectedTagName) {
     if (!node) {
       throw `Document doesn't contain tag ${expectedTagName} on expected position`

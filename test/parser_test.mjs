@@ -79,10 +79,7 @@ describe('Post', () => {
   })
 
   describe('#parseBody()', () => {
-    // it("throws an error if it isn't valid", () => {
-    //   const post = new Post('hello-world', markdownWithHeader)
-    //   assert.throws(() => post.parseBody(), /TODO/)
-    // })
+    /* Note: it seems that showdown never throws an error. */
 
     describe('#title', () => {
       it('returns the main post title', () => {
