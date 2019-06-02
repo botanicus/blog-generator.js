@@ -1,3 +1,5 @@
+import fs from 'fs'
+
 import {
   formatLongPostObject,
   formatShortPostObject
@@ -10,7 +12,7 @@ import {
   CreateDirectoryAction,
   RemoveDirectoryAction,
   RemoveFileAction
-} from 'fs-actions'
+} from '@botanicus/fs-actions'
 
 import Post from './post.mjs'
 
