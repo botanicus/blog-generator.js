@@ -26,13 +26,18 @@ export function validate (contentDirectory) {
   4. Generate output/posts.json and output/tags/*.json.
 */
 export function generate (contentDirectory, outputDirectory) {
+  if (!fs.existsSync(contentDirectory) || !fs.statSync(contentDirectory).isDirectory()) {
+    throw new Error(`generate: content directory ${contentDirectory} doesn't exist or is not a directory`)
+  }
+
   const actions = new FileSystemActions()
 
   /*
     Remove everything from the output/ directory.
-    Except .git/ and the likes.
+    Except .git/ and the likes OR create the output
+    directory if it doesn't exist yet.
   */
-  cleanUpDirectory(outputDirectory, actions)
+  prepareOutputDirectory(outputDirectory, actions)
 
   const posts = loadAllPosts(contentDirectory)
   /*
@@ -70,8 +75,8 @@ function loadAllPosts (postDirectory) {
   })
 }
 
-function cleanUpDirectory (directory, actions) {
-  if (fs.statSync(directory).isDirectory()) {
+function prepareOutputDirectory (directory, actions) {
+  if (fs.existsSync(directory) && fs.statSync(directory).isDirectory()) {
     fs.readdirSync(directory).
       /* Filter out .git and the likes. */
       filter((path) => path.match(/^[^\.]/)).
