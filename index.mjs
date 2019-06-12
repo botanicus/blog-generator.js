@@ -40,38 +40,47 @@ export function generate (contentDirectory, outputDirectory) {
   prepareOutputDirectory(outputDirectory, actions)
 
   const posts = loadAllPosts(contentDirectory)
+
   /*
    Create output/2019-05-20-hello-world/.
    Generate hello-world.json from hello-world.md.
    Copy all the images.
    Rewrite the header: add date.
   */
-  posts.forEach((post) => {
-    //
-  })
+  posts.forEach((post) => generatePost(post, actions, outputDirectory))
 
-  generateIndex(posts, actions)
-  generateTagIndices(posts, actions)
+  generateIndex(posts, actions, outputDirectory)
+  generateTagIndices(posts, actions, outputDirectory)
 
   return actions
 }
 
-function generateIndex (posts, actions) {
+function generatePost (post, actions, outputDirectory) {
   // TODO
+  console.log(`~ generatePost ${post.slug}`)
+  actions.add(new CreateDirectoryAction(`${outputDirectory}/${post.timestamp}-${post.slug}`))
 }
 
-function generateTagIndices (posts, actions) {
+function generateIndex (posts, actions, outputDirectory) {
   // TODO
+  console.log('~ generateIndex')
+}
+
+function generateTagIndices (posts, actions, outputDirectory) {
+  // TODO
+  console.log('~ generateTagIndices')
 }
 
 function loadAllPosts (postDirectory) {
   const postDirectories = fs.readdirSync(postDirectory).
-    filter((path) => fs.statSync(path).isDirectory() && path.match(/^\d{4}-\d{2}\d{2}-/))
+    filter((basename) => fs.statSync(`${postDirectory}/${basename}`).isDirectory() && basename.match(/^\d{4}-\d{2}-\d{2}-/))
 
   return postDirectories.map((directory) => {
-    const slug = path.replace(/^\d{4}-\d{2}-\d{2}-(.+)\.md$/, '$1')
+    const slug = directory.replace(/^\d{4}-\d{2}-\d{2}-(.+)$/, '$1')
     const path = `${postDirectory}/${directory}/${slug}.md`
-    new Post(slug, fs.readFileSync(path))
+    const post = new Post(slug, fs.readFileSync(path))
+    if (!post.date) post.date = new Date() ////// ........
+    return post
   })
 }
 

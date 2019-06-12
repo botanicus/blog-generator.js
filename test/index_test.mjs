@@ -37,6 +37,13 @@ describe('generate()', () => {
   describe('with a content directory with some posts in it', () => {
     const contentDirectory = 'test/assets/content'
 
-    // TODO
+    it('creates the post directory', () => {
+      const actions = generate(contentDirectory, outputDirectory)
+      const createOutputDirectoryAction = actions.actions[0]
+      assert(createOutputDirectoryAction.targetDirectoryPath, outputDirectory)
+
+      const createFirstPostDirectoryAction = actions.actions[1]
+      assert(createFirstPostDirectoryAction.targetDirectoryPath, `${outputDirectory}/2019-06-03-hello-world`)
+    })
   })
 })

@@ -5,6 +5,10 @@
 
 import PostParser from './parser.mjs'
 
+function appendLeadingZeroes(n) {
+  return (n <= 9) ? `0${n}` : n
+}
+
 export default class Post {
   constructor(slug, markdownWithHeader) {
     this.post = new PostParser(slug, markdownWithHeader)
@@ -20,6 +24,13 @@ export default class Post {
 
   get date() {
     return this.post.date
+  }
+
+  get timestamp() {
+    const yyyy = this.post.date.getFullYear()
+    const mm = appendLeadingZeroes(this.post.date.getMonth() + 1)
+    const dd = appendLeadingZeroes(this.post.date.getDate() + 1)
+    return `${yyyy}-${mm}-${dd}`
   }
 
   get header() {
