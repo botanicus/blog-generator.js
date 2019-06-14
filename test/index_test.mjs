@@ -16,7 +16,7 @@ describe('generate()', () => {
       it('creates the output directory first', () => {
         const actions = generate(contentDirectory, outputDirectory)
         const createOutputDirectoryAction = actions.actions[0]
-        assert(createOutputDirectoryAction.targetDirectoryPath, outputDirectory)
+        assert.equal(createOutputDirectoryAction.targetDirectoryPath, outputDirectory)
       })
     })
 
@@ -27,10 +27,10 @@ describe('generate()', () => {
         const actions = generate(contentDirectory, outputDirectory)
 
         const removeFileAction = actions.actions[0]
-        assert(removeFileAction.targetFilePath, `${outputDirectory}/index.json`)
+        assert.equal(removeFileAction.targetFilePath, `${outputDirectory}/index.json`)
 
         const removeDirectoryAction = actions.actions[1]
-        assert(removeDirectoryAction.targetDirectoryPath, `${outputDirectory}/tags`)
+        assert.equal(removeDirectoryAction.targetDirectoryPath, `${outputDirectory}/tags`)
       })
     })
   })
@@ -42,48 +42,46 @@ describe('generate()', () => {
       const actions = generate(contentDirectory, outputDirectory)
       const createOutputDirectoryAction = actions.actions[0]
       assert.equal(createOutputDirectoryAction.constructor.name, 'CreateDirectoryAction')
-      assert(createOutputDirectoryAction.targetDirectoryPath, outputDirectory)
+      assert.equal(createOutputDirectoryAction.targetDirectoryPath, outputDirectory)
 
       const createFirstPostDirectoryAction = actions.actions[1]
       assert.equal(createFirstPostDirectoryAction.constructor.name, 'CreateDirectoryAction')
-      assert(createFirstPostDirectoryAction.targetDirectoryPath, `${outputDirectory}/2019-06-01-hello-world`)
+      assert.equal(createFirstPostDirectoryAction.targetDirectoryPath, `${outputDirectory}/2019-06-01-hello-world`)
 
-      const createFirstPostSourceAction = actions.actions[2]
-      assert.equal(createFirstPostSourceAction.constructor.name, 'FileWriteAction')
-      assert(createFirstPostSourceAction.targetFilePath, `${outputDirectory}/2019-06-01-hello-world/hello-world.md`)
-      assert(createFirstPostSourceAction.content, fs.readFileSync(`${contentDirectory}/2019-06-01-hello-world/hello-world.md`))
-
-      const createFirstPostJSONAction = actions.actions[3]
+      const createFirstPostJSONAction = actions.actions[2]
       assert.equal(createFirstPostJSONAction.constructor.name, 'FileWriteAction')
-      assert(createFirstPostJSONAction.targetFilePath, `${outputDirectory}/2019-06-01-hello-world/hello-world.json`)
+      assert.equal(createFirstPostJSONAction.targetFilePath, `${outputDirectory}/2019-06-01-hello-world/hello-world.json`)
       const firstPostContent = createFirstPostJSONAction.content
       assert.deepEqual(JSON.parse(firstPostContent), {
         title: 'Hello world',
         slug: 'hello-world',
-        date: '2019-06-14T16:50:00.000Z',
+        date: '2019-06-01T16:50:00.000Z',
         excerpt: 'Test',
         body: '',
         tags: []
       })
 
-      const createSecondPostDirectoryAction = actions.actions[4]
+      const createSecondPostDirectoryAction = actions.actions[3]
       assert.equal(createSecondPostDirectoryAction.constructor.name, 'CreateDirectoryAction')
-      assert(createSecondPostDirectoryAction.targetDirectoryPath, `${outputDirectory}/2019-06-03-new-post`)
+      assert.equal(createSecondPostDirectoryAction.targetDirectoryPath, `${outputDirectory}/2019-06-03-new-post`)
 
-      const createNewPostLogAction = actions.actions[5]
+      const createNewPostLogAction = actions.actions[4]
       assert.equal(createNewPostLogAction.constructor.name, 'ConsoleLogAction')
       assert.equal(createNewPostLogAction.message, 'New post detected new-post, setting published date')
 
-      const createSecondPostSourceAction = actions.actions[6]
+      const createSecondPostSourceAction = actions.actions[5]
       assert.equal(createSecondPostSourceAction.constructor.name, 'FileWriteAction')
-      assert(createSecondPostSourceAction.targetFilePath, `${outputDirectory}/2019-06-03-new-post/new-post.md`)
-      assert(createSecondPostSourceAction.content, fs.readFileSync(`${contentDirectory}/2019-06-03-new-post/new-post.md`))
+      assert.equal(createSecondPostSourceAction.targetFilePath, `${outputDirectory}/2019-06-03-new-post/new-post.md`)
+      // TODO: how about the date????
+      assert.equal(createSecondPostSourceAction.content, fs.readFileSync(`${contentDirectory}/2019-06-03-new-post/new-post.md`))
 
-      const createSecondPostJSONAction = actions.actions[7]
+      const createSecondPostJSONAction = actions.actions[6]
       assert.equal(createSecondPostJSONAction.constructor.name, 'FileWriteAction')
-      assert(createSecondPostJSONAction.targetFilePath, `${outputDirectory}/2019-06-03-new-post/new-post.json`)
-      const secondPostContent = createSecondPostJSONAction.content
-      assert.deepEqual(JSON.parse(secondPostContent), {
+      assert.equal(createSecondPostJSONAction.targetFilePath, `${outputDirectory}/2019-06-03-new-post/new-post.json`)
+      const secondPostContent = JSON.parse(createSecondPostJSONAction.content)
+      assert.ok(secondPostContent.date.match(/^.+$/)) /////
+      delete secondPostContent.date
+      assert.deepEqual(secondPostContent, {
         title: 'New post',
         slug: 'new-post',
         excerpt: 'Test',

@@ -3,7 +3,8 @@
   and we can treat it same as the object parsed from the stored JSON.
 */
 
-import PostParser from './parser.mjs'
+import PostParser from './post/parser.mjs'
+import PostLocation from './post/location.mjs'
 
 function appendLeadingZeroes(n) {
   return (n <= 9) ? `0${n}` : n
@@ -35,7 +36,7 @@ export default class Post {
 
     const yyyy = this.post.date.getFullYear()
     const mm = appendLeadingZeroes(this.post.date.getMonth() + 1)
-    const dd = appendLeadingZeroes(this.post.date.getDate() + 1)
+    const dd = appendLeadingZeroes(this.post.date.getDate())
     return `${yyyy}-${mm}-${dd}`
   }
 
@@ -68,5 +69,9 @@ export default class Post {
       body: this.body,
       tags: this.tags
     }
+  }
+
+  getLocation(contentDirectory, outputDirectory) {
+    return new PostLocation(this.timestamp, this.slug, contentDirectory, outputDirectory)
   }
 }
