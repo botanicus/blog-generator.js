@@ -20,11 +20,11 @@ export default class PostParser {
     }
 
     ensure(dateValue.getMonth, 'Post#date accepts only date-like objects')
-    this._date = dateValue
+    this.header.date = dateValue
   }
 
   get date() {
-    return this.header.date || this._date
+    return this.header.date
   }
 
   get header() {
