@@ -1,6 +1,17 @@
 /* Private model, the public API is in post.mjs. */
 
-import { ensure, escapeRegExp } from './utils.mjs'
+// /* To be used in the YAML header, NOT in the JSON data. */
+// get fullDate() {
+//   if (!this.post.date) return
+
+//   const HH = appendLeadingZeroes(this.post.date.getHours())
+//   const MM = appendLeadingZeroes(this.post.date.getMinutes())
+
+//   /* Apending 00 so YAML recognise it as a date. */
+//   return `${this.timestamp} ${HH}:${MM}:00`
+// }
+
+import { ensure, escapeRegExp } from '../utils.mjs'
 import jsdom from 'jsdom'
 const { JSDOM } = jsdom
 import showdown from 'showdown'
@@ -27,9 +38,14 @@ export default class PostParser {
     return this.header.date
   }
 
+  /* We have to cache the value, so when we set the date, it doesn't get thrown away. */
   get header() {
+    if (this._header) return this._header
+
     const yamlData = this.split()[0]
-    return yamlData ? yaml.safeLoad(yamlData) : {}
+    this._header = yamlData ? yaml.safeLoad(yamlData) : {}
+
+    return this._header
   }
 
   get rawBody() {

@@ -3,9 +3,8 @@ import fs from 'fs'
 import {
   formatLongPostObject,
   formatShortPostObject
-} from './format-data-output.mjs'
+} from './post/formatters.mjs'
 
-// fs-actions TODO: Consider adding GitAddAction and GitCommitAction.
 import {
   FileSystemActions,
   MoveFileAction,
@@ -15,6 +14,12 @@ import {
   RemoveFileAction,
   ConsoleLogAction
 } from '@botanicus/fs-actions'
+
+import {
+  GitAddAction,
+  GitRemoveAction,
+  GitCommitAction
+} from '@botanicus/fs-actions/git.mjs'
 
 import Post from './post.mjs'
 
@@ -59,15 +64,35 @@ export function generate (contentDirectory, outputDirectory) {
 }
 
 function generatePost (post, actions, outputDirectory, contentDirectory) {
-  // console.log(`~ generatePost ${post.slug}`)
-  actions.add(new CreateDirectoryAction(`${outputDirectory}/${post.timestamp}-${post.slug}`))
+  const location = post.getLocation(contentDirectory, outputDirectory)
+  actions.add(new CreateDirectoryAction(location.outputDirectory))
 
   if (!post.date) {
-    actions.add(new ConsoleLogAction(`New post detected ${post.slug}, setting published date`))
+    // const now = new Date()
+    // post.date = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
     post.date = new Date()
+    console.log(['d', post.date, post.timestamp])
+
+    const postDirectoryPath = `${contentDirectory}/${post.timestamp}-${post.slug}`
+    const postSourceFilePath = `${postDirectoryPath}/${post.slug}.md`
+
+    actions.add(new ConsoleLogAction(`New post detected ${post.slug}, setting published date`))
+    actions.add(new FileWriteAction(postSourceFilePath, post.content))
+    actions.add(new GitAddAction(postDirectoryPath))
+    if (post.tags.length) {
+      actions.add(new GitCommitAction(`Post ${post.title} published with tags ${post.tags.join(' ')}`))
+    } else {
+      actions.add(new GitCommitAction(`Post ${post.title} published`))
+    }
+
+    // /* Rename to respect the real published date. */
+    // if (post.timestamp !== realTimestamp) {
+    //   // TODO: add GitRenameAction to fs-actions
+    //   actions.add(new GitRenameAction(a, b))
+    //   actions.add(new GitCommitAction(`${a} -> ${b}`))
+    // }
   }
 
-  actions.add(new FileWriteAction(`${contentDirectory}/${post.timestamp}-${post.slug}/${post.slug}.md`, post.content))
   actions.add(new FileWriteAction(`${outputDirectory}/${post.timestamp}-${post.slug}/${post.slug}.json`, JSON.stringify(post.asJSON())))
 }
 
