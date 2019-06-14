@@ -6,6 +6,7 @@ const { JSDOM } = jsdom
 import showdown from 'showdown'
 import yaml from 'js-yaml'
 
+/* TODO: validate that date is a Date instance. */
 export default class PostParser {
   constructor(slug, markdownWithHeader) {
     this.slug = ensure(slug, 'Post: slug is required')

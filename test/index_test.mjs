@@ -44,22 +44,37 @@ describe('generate()', () => {
       assert(createOutputDirectoryAction.targetDirectoryPath, outputDirectory)
 
       const createFirstPostDirectoryAction = actions.actions[1]
-      assert(createFirstPostDirectoryAction.targetDirectoryPath, `${outputDirectory}/2019-06-03-hello-world`)
+      assert(createFirstPostDirectoryAction.targetDirectoryPath, `${outputDirectory}/2019-06-01-hello-world`)
 
       const createFirstPostSourceAction = actions.actions[2]
-      assert(createFirstPostSourceAction.targetFilePath, `${outputDirectory}/2019-06-03-hello-world/hello-world.md`)
-      assert(createFirstPostSourceAction.content, fs.readFileSync(`${contentDirectory}/2019-06-03-hello-world/hello-world.md`))
+      assert(createFirstPostSourceAction.targetFilePath, `${outputDirectory}/2019-06-01-hello-world/hello-world.md`)
+      assert(createFirstPostSourceAction.content, fs.readFileSync(`${contentDirectory}/2019-06-01-hello-world/hello-world.md`))
 
       const createFirstPostJSONAction = actions.actions[3]
-      assert(createFirstPostJSONAction.targetFilePath, `${outputDirectory}/2019-06-03-hello-world/hello-world.json`)
-      const content = createFirstPostJSONAction.content
-      console.log(content)
-      // assert(content.date)
-      delete content.date
-      console.log(content)
-      assert.deepEqual(JSON.parse(content), {
+      assert(createFirstPostJSONAction.targetFilePath, `${outputDirectory}/2019-06-01-hello-world/hello-world.json`)
+      const firstPostContent = createFirstPostJSONAction.content
+      assert.deepEqual(JSON.parse(firstPostContent), {
         title: 'Hello world',
         slug: 'hello-world',
+        date: '2019-06-14T16:50:00.000Z',
+        excerpt: 'Test',
+        body: '',
+        tags: []
+      })
+
+      const createSecondPostDirectoryAction = actions.actions[4]
+      assert(createSecondPostDirectoryAction.targetDirectoryPath, `${outputDirectory}/2019-06-03-new-post`)
+
+      const createSecondPostSourceAction = actions.actions[5]
+      assert(createSecondPostSourceAction.targetFilePath, `${outputDirectory}/2019-06-03-new-post/new-post.md`)
+      assert(createSecondPostSourceAction.content, fs.readFileSync(`${contentDirectory}/2019-06-03-new-post/new-post.md`))
+
+      const createSecondPostJSONAction = actions.actions[6]
+      assert(createSecondPostJSONAction.targetFilePath, `${outputDirectory}/2019-06-03-new-post/new-post.json`)
+      const secondPostContent = createSecondPostJSONAction.content
+      assert.deepEqual(JSON.parse(secondPostContent), {
+        title: 'New post',
+        slug: 'new-post',
         excerpt: 'Test',
         body: '',
         tags: []
