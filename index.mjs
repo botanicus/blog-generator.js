@@ -5,13 +5,15 @@ import {
   formatShortPostObject
 } from './format-data-output.mjs'
 
+// fs-actions TODO: Consider adding GitAddAction and GitCommitAction.
 import {
   FileSystemActions,
   MoveFileAction,
   FileWriteAction,
   CreateDirectoryAction,
   RemoveDirectoryAction,
-  RemoveFileAction
+  RemoveFileAction,
+  ConsoleLogAction
 } from '@botanicus/fs-actions'
 
 import Post from './post.mjs'
@@ -46,6 +48,7 @@ export function generate (contentDirectory, outputDirectory) {
    Generate hello-world.json from hello-world.md.
    Copy all the images.
    Rewrite the header: add date.
+   Rewrite the slug if necessary, based on today's date (both content and output).
   */
   posts.forEach((post) => generatePost(post, actions, outputDirectory, contentDirectory))
 
@@ -56,12 +59,14 @@ export function generate (contentDirectory, outputDirectory) {
 }
 
 function generatePost (post, actions, outputDirectory, contentDirectory) {
-  // TODO
-  console.log(`~ generatePost ${post.slug}`)
+  // console.log(`~ generatePost ${post.slug}`)
   actions.add(new CreateDirectoryAction(`${outputDirectory}/${post.timestamp}-${post.slug}`))
-  /* TODO: Extend with date: if not present. */
-  // if (!post.date) post.date = new Date() ////// ........
-  // console.log(`~ New post detected ${post.slug}`)
+
+  if (!post.date) {
+    actions.add(new ConsoleLogAction(`New post detected ${post.slug}, setting published date`))
+    post.date = new Date()
+  }
+
   actions.add(new FileWriteAction(`${contentDirectory}/${post.timestamp}-${post.slug}/${post.slug}.md`, post.content))
   actions.add(new FileWriteAction(`${outputDirectory}/${post.timestamp}-${post.slug}/${post.slug}.json`, JSON.stringify(post.asJSON())))
 }
