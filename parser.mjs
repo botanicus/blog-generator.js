@@ -9,17 +9,21 @@ import yaml from 'js-yaml'
 export default class PostParser {
   constructor(slug, markdownWithHeader) {
     this.slug = ensure(slug, 'Post: slug is required')
-    this.markdownWithHeader = ensure(markdownWithHeader, 'Post: markdownWithHeader is required')
+    this.markdownWithHeader = ensure(markdownWithHeader, `Post: markdownWithHeader is required for post ${slug}`)
   }
 
   /* This is required by the addCreatedAt() function in post.mjs. */
   set date(dateValue) {
+    if (this.header.date) {
+      throw new Error(`Date of ${this.slug} is already set`)
+    }
+
     ensure(dateValue.getMonth, 'Post#date accepts only date-like objects')
     this._date = dateValue
   }
 
   get date() {
-    return this._date
+    return this.header.date || this._date
   }
 
   get header() {

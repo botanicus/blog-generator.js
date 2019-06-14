@@ -47,7 +47,7 @@ export function generate (contentDirectory, outputDirectory) {
    Copy all the images.
    Rewrite the header: add date.
   */
-  posts.forEach((post) => generatePost(post, actions, outputDirectory))
+  posts.forEach((post) => generatePost(post, actions, outputDirectory, contentDirectory))
 
   generateIndex(posts, actions, outputDirectory)
   generateTagIndices(posts, actions, outputDirectory)
@@ -55,20 +55,25 @@ export function generate (contentDirectory, outputDirectory) {
   return actions
 }
 
-function generatePost (post, actions, outputDirectory) {
+function generatePost (post, actions, outputDirectory, contentDirectory) {
   // TODO
   console.log(`~ generatePost ${post.slug}`)
   actions.add(new CreateDirectoryAction(`${outputDirectory}/${post.timestamp}-${post.slug}`))
+  /* TODO: Extend with date: if not present. */
+  // if (!post.date) post.date = new Date() ////// ........
+  // console.log(`~ New post detected ${post.slug}`)
+  actions.add(new FileWriteAction(`${contentDirectory}/${post.timestamp}-${post.slug}/${post.slug}.md`, post.content))
+  actions.add(new FileWriteAction(`${outputDirectory}/${post.timestamp}-${post.slug}/${post.slug}.json`, JSON.stringify(post.asJSON())))
 }
 
 function generateIndex (posts, actions, outputDirectory) {
   // TODO
-  console.log('~ generateIndex')
+  console.log('~ generateIndex: TODO')
 }
 
 function generateTagIndices (posts, actions, outputDirectory) {
   // TODO
-  console.log('~ generateTagIndices')
+  console.log('~ generateTagIndices: TODO')
 }
 
 function loadAllPosts (postDirectory) {
@@ -78,8 +83,7 @@ function loadAllPosts (postDirectory) {
   return postDirectories.map((directory) => {
     const slug = directory.replace(/^\d{4}-\d{2}-\d{2}-(.+)$/, '$1')
     const path = `${postDirectory}/${directory}/${slug}.md`
-    const post = new Post(slug, fs.readFileSync(path))
-    if (!post.date) post.date = new Date() ////// ........
+    const post = new Post(slug, fs.readFileSync(path).toString())
     return post
   })
 }

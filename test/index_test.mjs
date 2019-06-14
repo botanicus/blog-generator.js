@@ -1,3 +1,4 @@
+import fs from 'fs'
 import assert from 'assert'
 import { validate, generate } from '../index.mjs'
 
@@ -44,6 +45,25 @@ describe('generate()', () => {
 
       const createFirstPostDirectoryAction = actions.actions[1]
       assert(createFirstPostDirectoryAction.targetDirectoryPath, `${outputDirectory}/2019-06-03-hello-world`)
+
+      const createFirstPostSourceAction = actions.actions[2]
+      assert(createFirstPostSourceAction.targetFilePath, `${outputDirectory}/2019-06-03-hello-world/hello-world.md`)
+      assert(createFirstPostSourceAction.content, fs.readFileSync(`${contentDirectory}/2019-06-03-hello-world/hello-world.md`))
+
+      const createFirstPostJSONAction = actions.actions[3]
+      assert(createFirstPostJSONAction.targetFilePath, `${outputDirectory}/2019-06-03-hello-world/hello-world.json`)
+      const content = createFirstPostJSONAction.content
+      console.log(content)
+      // assert(content.date)
+      delete content.date
+      console.log(content)
+      assert.deepEqual(JSON.parse(content), {
+        title: 'Hello world',
+        slug: 'hello-world',
+        excerpt: 'Test',
+        body: '',
+        tags: []
+      })
     })
   })
 })
