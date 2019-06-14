@@ -18,6 +18,10 @@ export default class Post {
     return this.post.slug
   }
 
+  get content() {
+    return this.post.markdownWithHeader
+  }
+
   set date(value) {
     this.post.date = value
   }
@@ -27,6 +31,8 @@ export default class Post {
   }
 
   get timestamp() {
+    if (!this.post.date) return
+
     const yyyy = this.post.date.getFullYear()
     const mm = appendLeadingZeroes(this.post.date.getMonth() + 1)
     const dd = appendLeadingZeroes(this.post.date.getDate() + 1)
@@ -51,5 +57,16 @@ export default class Post {
 
   get body() {
     return this.post.parseBody().body
+  }
+
+  asJSON() {
+    return {
+      title: this.title,
+      slug: this.slug,
+      date: this.date,
+      excerpt: this.excerpt,
+      body: this.body,
+      tags: this.tags
+    }
   }
 }
