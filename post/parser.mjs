@@ -1,16 +1,5 @@
 /* Private model, the public API is in post.mjs. */
 
-// /* To be used in the YAML header, NOT in the JSON data. */
-// get fullDate() {
-//   if (!this.post.date) return
-
-//   const HH = appendLeadingZeroes(this.post.date.getHours())
-//   const MM = appendLeadingZeroes(this.post.date.getMinutes())
-
-//   /* Apending 00 so YAML recognise it as a date. */
-//   return `${this.timestamp} ${HH}:${MM}:00`
-// }
-
 import { ensure, escapeRegExp } from '../utils.mjs'
 import jsdom from 'jsdom'
 const { JSDOM } = jsdom
