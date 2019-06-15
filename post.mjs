@@ -28,8 +28,9 @@ export default class Post {
     const header = yaml.dump(this.post.header).replace(/^date: .+/, () => {
       const HH = appendLeadingZeroes(this.post.date.getHours())
       const MM = appendLeadingZeroes(this.post.date.getMinutes())
+      const SS = appendLeadingZeroes(this.post.date.getSeconds())
       /* Apending 00 so YAML recognise it as a date. */
-      return `date: ${this.timestamp} ${HH}:${MM}:00`
+      return `date: ${this.timestamp} ${HH}:${MM}:${SS}`
     })
     return [header.trim(), '---', this.post.rawBody].join("\n\n")
   }
