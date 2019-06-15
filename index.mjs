@@ -10,6 +10,7 @@ import {
   MoveFileAction,
   FileWriteAction,
   CreateDirectoryAction,
+  EnsureDirectoryAction,
   RemoveDirectoryAction,
   RemoveFileAction,
   ConsoleLogAction
@@ -34,6 +35,7 @@ export function validate (contentDirectory) {
 */
 export function generate (contentDirectory, outputDirectory) {
   if (!fs.existsSync(contentDirectory) || !fs.statSync(contentDirectory).isDirectory()) {
+    // TODO: Just create it.
     throw new Error(`generate: content directory ${contentDirectory} doesn't exist or is not a directory`)
   }
 
@@ -44,6 +46,7 @@ export function generate (contentDirectory, outputDirectory) {
     Except .git/ and the likes OR create the output
     directory if it doesn't exist yet.
   */
+  // TODO: The .git directory is NEVER in output, as we are manipulating the content/ as well, like when changing timestamp.
   prepareOutputDirectory(outputDirectory, actions)
 
   const posts = loadAllPosts(contentDirectory)
@@ -55,7 +58,21 @@ export function generate (contentDirectory, outputDirectory) {
    Rewrite the header: add date.
    Rewrite the slug if necessary, based on today's date (both content and output).
   */
-  posts.forEach((post) => generatePost(post, actions, contentDirectory, outputDirectory))
+
+  /* Regenerate all the published posts, so we can commit changes. */
+  const publishedPosts = posts.filter((post) => post.date)
+  publishedPosts.forEach((post) => generatePost(post, actions, contentDirectory, outputDirectory))
+
+  generateIndex(publishedPosts, actions, outputDirectory)
+  generateTagIndices(publishedPosts, actions, outputDirectory)
+
+  actions.add(new GitAddAction(process.cwd(), [contentDirectory, outputDirectory]))
+  actions.add(new GitCommitAction(process.cwd(), 'Edits'))
+
+  /* Publish new posts. */
+  posts
+    .filter((post) => !post.date)
+    .forEach((post) => generatePost(post, actions, contentDirectory, outputDirectory))
 
   generateIndex(posts, actions, outputDirectory)
   generateTagIndices(posts, actions, outputDirectory)
@@ -66,7 +83,7 @@ export function generate (contentDirectory, outputDirectory) {
 /* Existing post has always consistency in the original timestamp and the actual one from the date YAML header. */
 function regenerateExistingPost (post, actions, location) {
   actions.add(new CreateDirectoryAction(location.outputDirectory))
-  actions.add(new FileWriteAction(location.outputFile, JSON.stringify(post.asJSON())))
+  actions.add(new FileWriteAction(location.outputFile, makeDateFormatPredictable(JSON.stringify(post.asJSON()))))
 }
 
 function generateNewPost (post, actions, contentDirectory, outputDirectory) {
@@ -110,7 +127,10 @@ function makeDateFormatPredictable (string) {
 }
 
 function generateIndex (posts, actions, outputDirectory) {
-  actions.add(new FileWriteAction(`${outputDirectory}/posts.json`, makeDateFormatPredictable(JSON.stringify(posts.map((post) => post.asShortJSON())))))
+  actions.add(new FileWriteAction(
+    `${outputDirectory}/posts.json`,
+    makeDateFormatPredictable(JSON.stringify(posts.map((post) => post.asShortJSON())))
+  ))
 }
 
 function buildTagMap (posts) {
@@ -128,10 +148,13 @@ function generateTagIndices (posts, actions, outputDirectory) {
 
   if (!entries.length) return
 
-  actions.add(new CreateDirectoryAction(`${outputDirectory}/tags`))
+  actions.add(new EnsureDirectoryAction(`${outputDirectory}/tags`))
 
   for (const [tag, postsForTag] of entries) {
-    actions.add(new FileWriteAction(`${outputDirectory}/tags/${tag}.json`, makeDateFormatPredictable(JSON.stringify(postsForTag.map((post) => post.asShortJSON())))))
+    actions.add(new FileWriteAction(
+      `${outputDirectory}/tags/${tag}.json`,
+      makeDateFormatPredictable(JSON.stringify(postsForTag.map((post) => post.asShortJSON())))
+    ))
   }
 }
 
