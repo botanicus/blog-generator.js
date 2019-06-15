@@ -75,17 +75,17 @@ function generateNewPost (post, actions, contentDirectory, outputDirectory) {
   post.date = new Date()
   const location = post.getLocation(contentDirectory, outputDirectory)
 
-  actions.add(new ConsoleLogAction(`New post detected ${post.slug}, setting published date`))
+  actions.add(new ConsoleLogAction(`${post.title} published`))
 
   actions.add(new CreateDirectoryAction(location.outputDirectory))
   actions.add(new FileWriteAction(location.outputFile, JSON.stringify(post.asJSON())))
 
   actions.add(new MoveFileAction(location.originalSourceDirectory, location.standardizedSourceDirectory))
   actions.add(new FileWriteAction(location.standardizedSourceFile, post.serialize()))
-  actions.add(new GitAddAction(process.cwd(), [location.standardizedSourceDirectory]))
+  actions.add(new GitAddAction(process.cwd(), [location.standardizedSourceDirectory, location.outputDirectory]))
 
   if (location.originalSourceDirectory !== location.standardizedSourceDirectory) {
-    actions.add(new GitRemoveAction(process.cwd(), [location.standardizedSourceDirectory]))
+    actions.add(new GitRemoveAction(process.cwd(), [location.originalSourceDirectory], {recursive: true}))
   }
 
   if (post.tags.length) {
