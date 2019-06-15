@@ -85,18 +85,23 @@ describe('generate()', () => {
         tags: []
       })
 
-      const createSecondPostSourceAction = actions.actions[6]
+      const renameSlugAction = actions.actions[6]
+      assert.equal(renameSlugAction.constructor.name, 'MoveFileAction')
+      assert.equal(renameSlugAction.sourceFile, 'test/assets/content/2019-06-03-new-post')
+      assert.equal(renameSlugAction.targetDirectory, `test/assets/content/${todayTimestamp}-new-post`)
+
+      const createSecondPostSourceAction = actions.actions[7]
       assert.equal(createSecondPostSourceAction.constructor.name, 'FileWriteAction')
-      assert.equal(createSecondPostSourceAction.targetFilePath, `${contentDirectory}/2019-06-03-new-post/new-post.md`)
+      assert.equal(createSecondPostSourceAction.targetFilePath, `${contentDirectory}/${todayTimestamp}-new-post/new-post.md`)
       assert.equal(createSecondPostSourceAction.content, fs.readFileSync(`${contentDirectory}/2019-06-03-new-post/new-post.md`).toString())
 
-      const gitAddSecondPostSourceAction = actions.actions[7]
+      const gitAddSecondPostSourceAction = actions.actions[8]
       assert.equal(gitAddSecondPostSourceAction.constructor.name, 'GitAddAction')
-      assert.deepEqual(gitAddSecondPostSourceAction.paths, [`${contentDirectory}/2019-06-03-new-post`])
+      assert.deepEqual(gitAddSecondPostSourceAction.paths, [`${contentDirectory}/${todayTimestamp}-new-post`])
 
-      const gitCommitSecondPostSourceAction = actions.actions[8]
+      const gitCommitSecondPostSourceAction = actions.actions[9]
       assert.equal(gitCommitSecondPostSourceAction.constructor.name, 'GitCommitAction')
-      assert.deepEqual(gitCommitSecondPostSourceAction.message, 'Post New post published')
+      assert.equal(gitCommitSecondPostSourceAction.message, 'Post New post published')
     })
   })
 })
