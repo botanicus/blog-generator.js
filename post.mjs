@@ -14,7 +14,7 @@ function appendLeadingZeroes(n) {
 
 export default class Post {
   constructor(slug, sourceFilePath) {
-    const markdownWithHeader = fs.readFileSync(sourceFilePath).toString() // Can be Buffer.
+    const markdownWithHeader = fs.readFileSync(sourceFilePath).toString() // Can be Buffer (if empty for instance).
     this.originalFileTimestamp = ensure(sourceFilePath.match(/\d{4}-\d{2}-\d{2}/)[0], `${sourceFilePath} doesn't contain the required timestamp`)
     this.post = new PostParser(slug, markdownWithHeader)
   }

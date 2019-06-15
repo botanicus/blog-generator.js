@@ -80,8 +80,8 @@ function generateNewPost (post, actions, contentDirectory, outputDirectory) {
   actions.add(new CreateDirectoryAction(location.outputDirectory))
   actions.add(new FileWriteAction(location.outputFile, JSON.stringify(post.asJSON())))
 
-  actions.add(new FileWriteAction(location.sourceFile, post.content))
-  actions.add(new GitAddAction(location.sourceDirectory))
+  actions.add(new FileWriteAction(location.originalSourceFile, post.content))
+  actions.add(new GitAddAction(location.originalSourceDirectory))
   if (post.tags.length) {
     actions.add(new GitCommitAction(`Post ${post.title} published with tags ${post.tags.join(' ')}`))
   } else {
