@@ -67,15 +67,30 @@ export function generate (contentDirectory, outputDirectory) {
   generateTagIndices(publishedPosts, actions, outputDirectory)
 
   actions.add(new GitAddAction(process.cwd(), [contentDirectory, outputDirectory]))
-  actions.add(new GitCommitAction(process.cwd(), 'Edits'))
+  actions.add(new GitCommitAction(process.cwd(), 'Edits', {soft: true}))
 
   /* Publish new posts. */
   posts
     .filter((post) => !post.date)
-    .forEach((post) => generatePost(post, actions, contentDirectory, outputDirectory))
+    .forEach((post) => {
+      const location = generateNewPost(post, actions, contentDirectory, outputDirectory)
+      /* Regenerate for atomicity, in case we have more new posts. */
+      generateIndex(posts, actions, outputDirectory)
+      generateTagIndices(posts, actions, outputDirectory)
 
-  generateIndex(posts, actions, outputDirectory)
-  generateTagIndices(posts, actions, outputDirectory)
+      if (location.originalSourceDirectory !== location.standardizedSourceDirectory) {
+        actions.add(new RemoveDirectoryAction(location.originalSourceDirectory))
+      }
+
+      actions.add(new GitAddAction(process.cwd(), [contentDirectory, outputDirectory]))
+
+      if (post.tags.length) {
+        actions.add(new GitCommitAction(process.cwd(), `Post ${post.title} published with tags ${post.tags.join(' ')}`))
+      } else {
+        actions.add(new GitCommitAction(process.cwd(), `Post ${post.title} published`))
+      }
+    })
+
 
   return actions
 }
@@ -83,7 +98,7 @@ export function generate (contentDirectory, outputDirectory) {
 /* Existing post has always consistency in the original timestamp and the actual one from the date YAML header. */
 function regenerateExistingPost (post, actions, location) {
   actions.add(new CreateDirectoryAction(location.outputDirectory))
-  actions.add(new FileWriteAction(location.outputFile, makeDateFormatPredictable(JSON.stringify(post.asJSON()))))
+  actions.add(new FileWriteAction(location.outputFile, formatDataForFile(JSON.stringify(post.asJSON()))))
 }
 
 function generateNewPost (post, actions, contentDirectory, outputDirectory) {
@@ -95,21 +110,12 @@ function generateNewPost (post, actions, contentDirectory, outputDirectory) {
   actions.add(new ConsoleLogAction(`${post.title} published`))
 
   actions.add(new CreateDirectoryAction(location.outputDirectory))
-  actions.add(new FileWriteAction(location.outputFile, JSON.stringify(post.asJSON())))
-
+  actions.add(new FileWriteAction(location.outputFile, formatDataForFile(JSON.stringify(post.asJSON())))
+  )
   actions.add(new MoveFileAction(location.originalSourceDirectory, location.standardizedSourceDirectory))
   actions.add(new FileWriteAction(location.standardizedSourceFile, post.serialize()))
-  actions.add(new GitAddAction(process.cwd(), [location.standardizedSourceDirectory, location.outputDirectory]))
 
-  if (location.originalSourceDirectory !== location.standardizedSourceDirectory) {
-    actions.add(new GitRemoveAction(process.cwd(), [location.originalSourceDirectory], {recursive: true}))
-  }
-
-  if (post.tags.length) {
-    actions.add(new GitCommitAction(process.cwd(), `Post ${post.title} published with tags ${post.tags.join(' ')}`))
-  } else {
-    actions.add(new GitCommitAction(process.cwd(), `Post ${post.title} published`))
-  }
+  return location
 }
 
 function generatePost (post, actions, contentDirectory, outputDirectory) {
@@ -126,10 +132,14 @@ function makeDateFormatPredictable (string) {
   return string.replace(/(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})\.\d{3}Z/g, '$1Z')
 }
 
+function formatDataForFile (string) {
+  return makeDateFormatPredictable(string) + "\n"
+}
+
 function generateIndex (posts, actions, outputDirectory) {
   actions.add(new FileWriteAction(
     `${outputDirectory}/posts.json`,
-    makeDateFormatPredictable(JSON.stringify(posts.map((post) => post.asShortJSON())))
+    formatDataForFile(JSON.stringify(posts.map((post) => post.asShortJSON())))
   ))
 }
 
@@ -153,7 +163,7 @@ function generateTagIndices (posts, actions, outputDirectory) {
   for (const [tag, postsForTag] of entries) {
     actions.add(new FileWriteAction(
       `${outputDirectory}/tags/${tag}.json`,
-      makeDateFormatPredictable(JSON.stringify(postsForTag.map((post) => post.asShortJSON())))
+      formatDataForFile(JSON.stringify(postsForTag.map((post) => post.asShortJSON())))
     ))
   }
 }
