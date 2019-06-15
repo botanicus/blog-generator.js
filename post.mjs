@@ -3,6 +3,8 @@
   and we can treat it same as the object parsed from the stored JSON.
 */
 
+import fs from 'fs'
+import { ensure } from './utils.mjs'
 import PostParser from './post/parser.mjs'
 import PostLocation from './post/location.mjs'
 
@@ -11,7 +13,9 @@ function appendLeadingZeroes(n) {
 }
 
 export default class Post {
-  constructor(slug, markdownWithHeader) {
+  constructor(slug, sourceFilePath) {
+    const markdownWithHeader = fs.readFileSync(sourceFilePath).toString() // Can be Buffer.
+    this.originalFileTimestamp = ensure(sourceFilePath.match(/\d{4}-\d{2}-\d{2}/)[0], `${sourceFilePath} doesn't contain the required timestamp`)
     this.post = new PostParser(slug, markdownWithHeader)
   }
 
@@ -72,6 +76,6 @@ export default class Post {
   }
 
   getLocation(contentDirectory, outputDirectory) {
-    return new PostLocation(this.timestamp, this.slug, contentDirectory, outputDirectory)
+    return new PostLocation(this.originalFileTimestamp, this.timestamp, this.slug, contentDirectory, outputDirectory)
   }
 }

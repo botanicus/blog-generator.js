@@ -55,7 +55,7 @@ export function generate (contentDirectory, outputDirectory) {
    Rewrite the header: add date.
    Rewrite the slug if necessary, based on today's date (both content and output).
   */
-  posts.forEach((post) => generatePost(post, actions, outputDirectory, contentDirectory))
+  posts.forEach((post) => generatePost(post, actions, contentDirectory, outputDirectory))
 
   generateIndex(posts, actions, outputDirectory)
   generateTagIndices(posts, actions, outputDirectory)
@@ -63,37 +63,43 @@ export function generate (contentDirectory, outputDirectory) {
   return actions
 }
 
-function generatePost (post, actions, outputDirectory, contentDirectory) {
-  const location = post.getLocation(contentDirectory, outputDirectory)
+/* Existing post has always consistency in the original timestamp and the actual one from the date YAML header. */
+function regenerateExistingPost (post, actions, location) {
   actions.add(new CreateDirectoryAction(location.outputDirectory))
+  actions.add(new FileWriteAction(location.outputFile, JSON.stringify(post.asJSON())))
+}
 
-  if (!post.date) {
-    // const now = new Date()
-    // post.date = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
-    post.date = new Date()
-    console.log(['d', post.date, post.timestamp])
+function generateNewPost (post, actions, contentDirectory, outputDirectory) {
+  // const now = new Date()
+  // post.date = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
+  post.date = new Date()
+  const location = post.getLocation(contentDirectory, outputDirectory)
 
-    const postDirectoryPath = `${contentDirectory}/${post.timestamp}-${post.slug}`
-    const postSourceFilePath = `${postDirectoryPath}/${post.slug}.md`
+  actions.add(new ConsoleLogAction(`New post detected ${post.slug}, setting published date`))
 
-    actions.add(new ConsoleLogAction(`New post detected ${post.slug}, setting published date`))
-    actions.add(new FileWriteAction(postSourceFilePath, post.content))
-    actions.add(new GitAddAction(postDirectoryPath))
-    if (post.tags.length) {
-      actions.add(new GitCommitAction(`Post ${post.title} published with tags ${post.tags.join(' ')}`))
-    } else {
-      actions.add(new GitCommitAction(`Post ${post.title} published`))
-    }
+  actions.add(new CreateDirectoryAction(location.outputDirectory))
+  actions.add(new FileWriteAction(location.outputFile, JSON.stringify(post.asJSON())))
 
-    // /* Rename to respect the real published date. */
-    // if (post.timestamp !== realTimestamp) {
-    //   // TODO: add GitRenameAction to fs-actions
-    //   actions.add(new GitRenameAction(a, b))
-    //   actions.add(new GitCommitAction(`${a} -> ${b}`))
-    // }
+  actions.add(new FileWriteAction(location.sourceFile, post.content))
+  actions.add(new GitAddAction(location.sourceDirectory))
+  if (post.tags.length) {
+    actions.add(new GitCommitAction(`Post ${post.title} published with tags ${post.tags.join(' ')}`))
+  } else {
+    actions.add(new GitCommitAction(`Post ${post.title} published`))
   }
 
-  actions.add(new FileWriteAction(`${outputDirectory}/${post.timestamp}-${post.slug}/${post.slug}.json`, JSON.stringify(post.asJSON())))
+  // /* Rename to respect the real published date. */
+  // if (post.timestamp !== realTimestamp) {
+  //   // TODO: add GitRenameAction to fs-actions
+  //   actions.add(new GitRenameAction(a, b))
+  //   actions.add(new GitCommitAction(`${a} -> ${b}`))
+  // }
+}
+
+function generatePost (post, actions, contentDirectory, outputDirectory) {
+  post.date ? regenerateExistingPost(
+    post, actions, post.getLocation(contentDirectory, outputDirectory)
+  ) : generateNewPost(post, actions, contentDirectory, outputDirectory)
 }
 
 function generateIndex (posts, actions, outputDirectory) {
@@ -113,7 +119,7 @@ function loadAllPosts (postDirectory) {
   return postDirectories.map((directory) => {
     const slug = directory.replace(/^\d{4}-\d{2}-\d{2}-(.+)$/, '$1')
     const path = `${postDirectory}/${directory}/${slug}.md`
-    const post = new Post(slug, fs.readFileSync(path).toString())
+    const post = new Post(slug, path)
     return post
   })
 }
