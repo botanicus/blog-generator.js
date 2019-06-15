@@ -41,6 +41,24 @@ describe('generate()', () => {
   describe('with a content directory with some posts in it', () => {
     const contentDirectory = 'test/assets/content'
 
+    const firstPost = {
+      title: 'Hello world',
+      date: '2019-06-01T16:50:00Z',
+      excerpt: 'Test',
+      slug: 'hello-world',
+      tags: ['intro']
+    }
+
+    const secondPost = {
+      title: 'New post',
+      date: '2019-06-15T14:00:00Z',
+      excerpt: 'Test',
+      slug: 'new-post',
+      tags: []
+    }
+
+    const firstPostWithBody = Object.assign({body: ''}, firstPost)
+
     it('creates the post directory', () => {
       const actions = generate(contentDirectory, outputDirectory)
       const createOutputDirectoryAction = actions.actions[0]
@@ -55,24 +73,43 @@ describe('generate()', () => {
       assert.equal(createFirstPostJSONAction.constructor.name, 'FileWriteAction')
       assert.equal(createFirstPostJSONAction.targetFilePath, `${outputDirectory}/2019-06-01-hello-world/hello-world.json`)
       const firstPostContent = createFirstPostJSONAction.content
-      assert.deepEqual(JSON.parse(firstPostContent), {
-        title: 'Hello world',
-        slug: 'hello-world',
-        date: '2019-06-01T16:50:00.000Z',
-        excerpt: 'Test',
-        body: '',
-        tags: ['intro']
-      })
+      assert.deepEqual(JSON.parse(firstPostContent), firstPostWithBody)
 
-      const createNewPostLogAction = actions.actions[3]
+      const generateIndexAction = actions.actions[3]
+      assert.equal(generateIndexAction.constructor.name, 'FileWriteAction')
+      assert.equal(generateIndexAction.targetFilePath, `${outputDirectory}/posts.json`)
+      const generateIndexActionContent = JSON.parse(generateIndexAction.content)
+      assert.deepEqual(generateIndexActionContent, [firstPost])
+
+      const createTagDirectoryAction = actions.actions[4]
+      assert.equal(createTagDirectoryAction.constructor.name, 'EnsureDirectoryAction')
+      assert.equal(createTagDirectoryAction.targetDirectoryPath, `${outputDirectory}/tags`)
+
+      const generateTagIndexAction = actions.actions[5]
+      assert.equal(generateTagIndexAction.constructor.name, 'FileWriteAction')
+      assert.equal(generateTagIndexAction.targetFilePath, `${outputDirectory}/tags/intro.json`)
+      const generateTagIndexActionContent = JSON.parse(generateTagIndexAction.content)
+      assert.deepEqual(generateTagIndexActionContent, [firstPost])
+
+      const gitAddPossibleEditsAction = actions.actions[6]
+      assert.equal(gitAddPossibleEditsAction.constructor.name, 'GitAddAction')
+      assert.equal(gitAddPossibleEditsAction.gitRootDirectory, process.cwd())
+      assert.deepEqual(gitAddPossibleEditsAction.paths, [contentDirectory, outputDirectory])
+
+      const gitCommitPossibleEditsAction = actions.actions[7]
+      assert.equal(gitCommitPossibleEditsAction.constructor.name, 'GitCommitAction')
+      assert.equal(gitCommitPossibleEditsAction.gitRootDirectory, process.cwd())
+      assert.equal(gitCommitPossibleEditsAction._message, 'Edits')
+
+      const createNewPostLogAction = actions.actions[8]
       assert.equal(createNewPostLogAction.constructor.name, 'ConsoleLogAction')
       assert.equal(createNewPostLogAction._message, 'New post published')
 
-      const createSecondPostDirectoryAction = actions.actions[4]
+      const createSecondPostDirectoryAction = actions.actions[9]
       assert.equal(createSecondPostDirectoryAction.constructor.name, 'CreateDirectoryAction')
       assert.equal(createSecondPostDirectoryAction.targetDirectoryPath, `${outputDirectory}/2019-06-15-new-post`)
 
-      const createSecondPostJSONAction = actions.actions[5]
+      const createSecondPostJSONAction = actions.actions[10]
       assert.equal(createSecondPostJSONAction.constructor.name, 'FileWriteAction')
       assert.equal(createSecondPostJSONAction.targetFilePath, `${outputDirectory}/2019-06-15-new-post/new-post.json`)
       const secondPostContent = JSON.parse(createSecondPostJSONAction.content)
@@ -87,63 +124,49 @@ describe('generate()', () => {
         tags: []
       })
 
-      const renameSlugAction = actions.actions[6]
+      const renameSlugAction = actions.actions[11]
       assert.equal(renameSlugAction.constructor.name, 'MoveFileAction')
       assert.equal(renameSlugAction.sourceFile, `${contentDirectory}/2019-06-03-new-post`)
       assert.equal(renameSlugAction.targetDirectory, `${contentDirectory}/2019-06-15-new-post`)
 
-      const createSecondPostSourceAction = actions.actions[7]
+      const createSecondPostSourceAction = actions.actions[12]
       assert.equal(createSecondPostSourceAction.constructor.name, 'FileWriteAction')
       assert.equal(createSecondPostSourceAction.targetFilePath, `${contentDirectory}/2019-06-15-new-post/new-post.md`)
       assert.equal(createSecondPostSourceAction.content, "date: 2019-06-15 14:00:00\n\n---\n\n# New post\n\n_Test_\n")
 
-      const gitAddSecondPostSourceAction = actions.actions[8]
+      const gitAddSecondPostSourceAction = actions.actions[13]
       assert.equal(gitAddSecondPostSourceAction.constructor.name, 'GitAddAction')
       assert.equal(gitAddSecondPostSourceAction.gitRootDirectory, process.cwd())
       assert.deepEqual(gitAddSecondPostSourceAction.paths, [`${contentDirectory}/2019-06-15-new-post`, `${outputDirectory}/2019-06-15-new-post`])
 
-      const gitRemoveOldSourceDirectoryAction = actions.actions[9]
+      const gitRemoveOldSourceDirectoryAction = actions.actions[14]
       assert.equal(gitRemoveOldSourceDirectoryAction.constructor.name, 'GitRemoveAction')
       assert.equal(gitRemoveOldSourceDirectoryAction.gitRootDirectory, process.cwd())
       assert(gitRemoveOldSourceDirectoryAction.options.recursive)
       assert.deepEqual(gitRemoveOldSourceDirectoryAction.paths, [`${contentDirectory}/2019-06-03-new-post`])
 
-      const gitCommitSecondPostSourceAction = actions.actions[10]
+      const gitCommitSecondPostSourceAction = actions.actions[15]
       assert.equal(gitCommitSecondPostSourceAction.constructor.name, 'GitCommitAction')
       assert.equal(gitCommitSecondPostSourceAction.gitRootDirectory, process.cwd())
       assert.equal(gitCommitSecondPostSourceAction._message, 'Post New post published')
 
-      const generateIndexAction = actions.actions[11]
-      assert.equal(generateIndexAction.constructor.name, 'FileWriteAction')
-      assert.equal(generateIndexAction.targetFilePath, `${outputDirectory}/posts.json`)
-      const generateIndexActionContent = JSON.parse(generateIndexAction.content)
-      const firstPost = {
-        title: 'Hello world',
-        date: '2019-06-01T16:50:00Z',
-        excerpt: 'Test',
-        slug: 'hello-world',
-        tags: ['intro']
-      }
-      const secondPost = {
-        title: 'New post',
-        date: '2019-06-15T14:00:00Z',
-        excerpt: 'Test',
-        slug: 'new-post',
-        tags: []
-      }
-      assert.deepEqual(generateIndexActionContent, [firstPost, secondPost])
+      const generateNewIndexAction = actions.actions[16]
+      assert.equal(generateNewIndexAction.constructor.name, 'FileWriteAction')
+      assert.equal(generateNewIndexAction.targetFilePath, `${outputDirectory}/posts.json`)
+      const generateNewIndexActionContent = JSON.parse(generateNewIndexAction.content)
+      assert.deepEqual(generateNewIndexActionContent, [firstPost, secondPost])
 
-      const createTagDirectoryAction = actions.actions[12]
-      assert.equal(createTagDirectoryAction.constructor.name, 'CreateDirectoryAction')
-      assert.equal(createTagDirectoryAction.targetDirectoryPath, `${outputDirectory}/tags`)
+      const ensureTagDirectoryAction = actions.actions[17]
+      assert.equal(ensureTagDirectoryAction.constructor.name, 'EnsureDirectoryAction')
+      assert.equal(ensureTagDirectoryAction.targetDirectoryPath, `${outputDirectory}/tags`)
 
-      const generateTagIndexAction = actions.actions[13]
-      assert.equal(generateTagIndexAction.constructor.name, 'FileWriteAction')
-      assert.equal(generateTagIndexAction.targetFilePath, `${outputDirectory}/tags/intro.json`)
-      const generateTagIndexActionContent = JSON.parse(generateTagIndexAction.content)
-      assert.deepEqual(generateTagIndexActionContent, [firstPost])
+      const generateNewTagIndexAction = actions.actions[18]
+      assert.equal(generateNewTagIndexAction.constructor.name, 'FileWriteAction')
+      assert.equal(generateNewTagIndexAction.targetFilePath, `${outputDirectory}/tags/intro.json`)
+      const generateNewTagIndexActionContent = JSON.parse(generateNewTagIndexAction.content)
+      assert.deepEqual(generateNewTagIndexActionContent, [firstPost])
 
-      assert(!actions.actions[14])
+      assert(!actions.actions[19])
     })
   })
 })
