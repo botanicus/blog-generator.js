@@ -82,20 +82,17 @@ function generateNewPost (post, actions, contentDirectory, outputDirectory) {
 
   actions.add(new MoveFileAction(location.originalSourceDirectory, location.standardizedSourceDirectory))
   actions.add(new FileWriteAction(location.standardizedSourceFile, post.content))
-  actions.add(new GitAddAction(location.standardizedSourceDirectory))
+  actions.add(new GitAddAction(process.cwd(), [location.standardizedSourceDirectory]))
 
-  if (post.tags.length) {
-    actions.add(new GitCommitAction(`Post ${post.title} published with tags ${post.tags.join(' ')}`))
-  } else {
-    actions.add(new GitCommitAction(`Post ${post.title} published`))
+  if (location.originalSourceDirectory !== location.standardizedSourceDirectory) {
+    actions.add(new GitRemoveAction(process.cwd(), [location.standardizedSourceDirectory]))
   }
 
-  // /* Rename to respect the real published date. */
-  // if (post.timestamp !== realTimestamp) {
-  //   // TODO: add GitRenameAction to fs-actions
-  //   actions.add(new GitRenameAction(a, b))
-  //   actions.add(new GitCommitAction(`${a} -> ${b}`))
-  // }
+  if (post.tags.length) {
+    actions.add(new GitCommitAction(process.cwd(), `Post ${post.title} published with tags ${post.tags.join(' ')}`))
+  } else {
+    actions.add(new GitCommitAction(process.cwd(), `Post ${post.title} published`))
+  }
 }
 
 function generatePost (post, actions, contentDirectory, outputDirectory) {

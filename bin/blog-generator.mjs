@@ -25,7 +25,7 @@ console.log('~ Validation successful.')
 
 // try {
   const actions = generate(contentDirectory, outputDirectory)
-  actions.validate()
+  // actions.validate()
   actions.commit()
 // } catch(error) {
 //   abort("#{error.class}: #{error.message}")

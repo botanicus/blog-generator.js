@@ -64,7 +64,7 @@ describe('generate()', () => {
       const todayTimestamp = '2019-06-15' // FIXME
       const createNewPostLogAction = actions.actions[3]
       assert.equal(createNewPostLogAction.constructor.name, 'ConsoleLogAction')
-      assert.equal(createNewPostLogAction.message, 'New post detected new-post, setting published date')
+      assert.equal(createNewPostLogAction._message, 'New post detected new-post, setting published date')
 
       const createSecondPostDirectoryAction = actions.actions[4]
       assert.equal(createSecondPostDirectoryAction.constructor.name, 'CreateDirectoryAction')
@@ -93,15 +93,17 @@ describe('generate()', () => {
       const createSecondPostSourceAction = actions.actions[7]
       assert.equal(createSecondPostSourceAction.constructor.name, 'FileWriteAction')
       assert.equal(createSecondPostSourceAction.targetFilePath, `${contentDirectory}/${todayTimestamp}-new-post/new-post.md`)
-      assert.equal(createSecondPostSourceAction.content, fs.readFileSync(`${contentDirectory}/2019-06-03-new-post/new-post.md`).toString())
+      assert.equal(createSecondPostSourceAction.content, "date: xxx\n\n---\n\n# New post\n\n_Test_\n")
 
       const gitAddSecondPostSourceAction = actions.actions[8]
       assert.equal(gitAddSecondPostSourceAction.constructor.name, 'GitAddAction')
+      assert.equal(gitAddSecondPostSourceAction.gitRootDirectory, outputDirectory)
       assert.deepEqual(gitAddSecondPostSourceAction.paths, [`${contentDirectory}/${todayTimestamp}-new-post`])
 
       const gitCommitSecondPostSourceAction = actions.actions[9]
       assert.equal(gitCommitSecondPostSourceAction.constructor.name, 'GitCommitAction')
-      assert.equal(gitCommitSecondPostSourceAction.message, 'Post New post published')
+      assert.equal(gitCommitSecondPostSourceAction.gitRootDirectory, outputDirectory)
+      assert.equal(gitCommitSecondPostSourceAction._message, 'Post New post published')
     })
   })
 })
