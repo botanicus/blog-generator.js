@@ -89,6 +89,14 @@ describe('generate()', () => {
       assert.equal(createSecondPostSourceAction.constructor.name, 'FileWriteAction')
       assert.equal(createSecondPostSourceAction.targetFilePath, `${contentDirectory}/2019-06-03-new-post/new-post.md`)
       assert.equal(createSecondPostSourceAction.content, fs.readFileSync(`${contentDirectory}/2019-06-03-new-post/new-post.md`).toString())
+
+      const gitAddSecondPostSourceAction = actions.actions[7]
+      assert.equal(gitAddSecondPostSourceAction.constructor.name, 'GitAddAction')
+      assert.deepEqual(gitAddSecondPostSourceAction.paths, [`${contentDirectory}/2019-06-03-new-post`])
+
+      const gitCommitSecondPostSourceAction = actions.actions[8]
+      assert.equal(gitCommitSecondPostSourceAction.constructor.name, 'GitCommitAction')
+      assert.deepEqual(gitCommitSecondPostSourceAction.message, 'Post New post published')
     })
   })
 })
