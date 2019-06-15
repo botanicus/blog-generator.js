@@ -61,23 +61,23 @@ describe('generate()', () => {
         tags: []
       })
 
-      const createSecondPostDirectoryAction = actions.actions[3]
+      const todayTimestamp = '2019-06-14' // FIXME
+      const createSecondPostDirectoryAction = actions.actions[4]
       assert.equal(createSecondPostDirectoryAction.constructor.name, 'CreateDirectoryAction')
-      assert.equal(createSecondPostDirectoryAction.targetDirectoryPath, `${outputDirectory}/2019-06-03-new-post`)
+      assert.equal(createSecondPostDirectoryAction.targetDirectoryPath, `${outputDirectory}/${todayTimestamp}-new-post`)
 
-      const createNewPostLogAction = actions.actions[4]
+      const createNewPostLogAction = actions.actions[3]
       assert.equal(createNewPostLogAction.constructor.name, 'ConsoleLogAction')
       assert.equal(createNewPostLogAction.message, 'New post detected new-post, setting published date')
 
       const createSecondPostSourceAction = actions.actions[5]
       assert.equal(createSecondPostSourceAction.constructor.name, 'FileWriteAction')
-      assert.equal(createSecondPostSourceAction.targetFilePath, `${outputDirectory}/2019-06-03-new-post/new-post.md`)
-      // TODO: how about the date????
-      assert.equal(createSecondPostSourceAction.content, fs.readFileSync(`${contentDirectory}/2019-06-03-new-post/new-post.md`))
+      assert.equal(createSecondPostSourceAction.targetFilePath, `${outputDirectory}/${todayTimestamp}-new-post/new-post.json`)
+      assert.equal(createSecondPostSourceAction.content, fs.readFileSync(`${contentDirectory}/${todayTimestamp}-new-post/new-post.md`))
 
       const createSecondPostJSONAction = actions.actions[6]
       assert.equal(createSecondPostJSONAction.constructor.name, 'FileWriteAction')
-      assert.equal(createSecondPostJSONAction.targetFilePath, `${outputDirectory}/2019-06-03-new-post/new-post.json`)
+      assert.equal(createSecondPostJSONAction.targetFilePath, `${outputDirectory}/${todayTimestamp}-new-post/new-post.json`)
       const secondPostContent = JSON.parse(createSecondPostJSONAction.content)
       assert.ok(secondPostContent.date.match(/^.+$/)) /////
       delete secondPostContent.date
