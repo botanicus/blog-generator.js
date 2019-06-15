@@ -101,14 +101,38 @@ function generatePost (post, actions, contentDirectory, outputDirectory) {
   ) : generateNewPost(post, actions, contentDirectory, outputDirectory)
 }
 
+/*
+  The dates are serialized as 2019-06-15T14:00:00.???Z
+  where the ??? are 3 random digits. This screws up my tests.
+*/
+function makeDateFormatPredictable (string) {
+  return string.replace(/(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})\.\d{3}Z/g, '$1Z')
+}
+
 function generateIndex (posts, actions, outputDirectory) {
-  // TODO
-  console.log('~ generateIndex: TODO')
+  actions.add(new FileWriteAction(`${outputDirectory}/posts.json`, makeDateFormatPredictable(JSON.stringify(posts.map((post) => post.asShortJSON())))))
+}
+
+function buildTagMap (posts) {
+  return posts.reduce((tags, post) => {
+    post.tags.forEach((tag) => {
+      if (!tags[tag]) tags[tag] = []
+      tags[tag].push(post)
+    })
+    return tags
+  }, {})
 }
 
 function generateTagIndices (posts, actions, outputDirectory) {
-  // TODO
-  console.log('~ generateTagIndices: TODO')
+  const entries = Object.entries(buildTagMap(posts))
+
+  if (!entries.length) return
+
+  actions.add(new CreateDirectoryAction(`${outputDirectory}/tags`))
+
+  for (const [tag, postsForTag] of entries) {
+    actions.add(new FileWriteAction(`${outputDirectory}/tags/${tag}.json`, makeDateFormatPredictable(JSON.stringify(postsForTag.map((post) => post.asShortJSON())))))
+  }
 }
 
 function loadAllPosts (postDirectory) {
