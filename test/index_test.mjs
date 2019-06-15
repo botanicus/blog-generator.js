@@ -66,7 +66,7 @@ describe('generate()', () => {
 
       const createNewPostLogAction = actions.actions[3]
       assert.equal(createNewPostLogAction.constructor.name, 'ConsoleLogAction')
-      assert.equal(createNewPostLogAction._message, 'New post detected new-post, setting published date')
+      assert.equal(createNewPostLogAction._message, 'New post published')
 
       const createSecondPostDirectoryAction = actions.actions[4]
       assert.equal(createSecondPostDirectoryAction.constructor.name, 'CreateDirectoryAction')
@@ -89,8 +89,8 @@ describe('generate()', () => {
 
       const renameSlugAction = actions.actions[6]
       assert.equal(renameSlugAction.constructor.name, 'MoveFileAction')
-      assert.equal(renameSlugAction.sourceFile, 'test/assets/content/2019-06-03-new-post')
-      assert.equal(renameSlugAction.targetDirectory, `test/assets/content/2019-06-15-new-post`)
+      assert.equal(renameSlugAction.sourceFile, `${contentDirectory}/2019-06-03-new-post`)
+      assert.equal(renameSlugAction.targetDirectory, `${contentDirectory}/2019-06-15-new-post`)
 
       const createSecondPostSourceAction = actions.actions[7]
       assert.equal(createSecondPostSourceAction.constructor.name, 'FileWriteAction')
@@ -100,12 +100,13 @@ describe('generate()', () => {
       const gitAddSecondPostSourceAction = actions.actions[8]
       assert.equal(gitAddSecondPostSourceAction.constructor.name, 'GitAddAction')
       assert.equal(gitAddSecondPostSourceAction.gitRootDirectory, process.cwd())
-      assert.deepEqual(gitAddSecondPostSourceAction.paths, [`${contentDirectory}/2019-06-15-new-post`])
+      assert.deepEqual(gitAddSecondPostSourceAction.paths, [`${contentDirectory}/2019-06-15-new-post`, `${outputDirectory}/2019-06-15-new-post`])
 
       const gitRemoveOldSourceDirectoryAction = actions.actions[9]
       assert.equal(gitRemoveOldSourceDirectoryAction.constructor.name, 'GitRemoveAction')
       assert.equal(gitRemoveOldSourceDirectoryAction.gitRootDirectory, process.cwd())
-      assert.deepEqual(gitRemoveOldSourceDirectoryAction.paths, ['test/assets/content/2019-06-15-new-post'])
+      assert(gitRemoveOldSourceDirectoryAction.options.recursive)
+      assert.deepEqual(gitRemoveOldSourceDirectoryAction.paths, [`${contentDirectory}/2019-06-03-new-post`])
 
       const gitCommitSecondPostSourceAction = actions.actions[10]
       assert.equal(gitCommitSecondPostSourceAction.constructor.name, 'GitCommitAction')
