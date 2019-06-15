@@ -7,6 +7,7 @@ import fs from 'fs'
 import { ensure } from './utils.mjs'
 import PostParser from './post/parser.mjs'
 import PostLocation from './post/location.mjs'
+import yaml from 'js-yaml'
 
 function appendLeadingZeroes(n) {
   return (n <= 9) ? `0${n}` : n
@@ -23,8 +24,12 @@ export default class Post {
     return this.post.slug
   }
 
-  get content() {
-    return this.post.markdownWithHeader
+  serialize() {
+    if (Object.keys(this.post.header).length) {
+      return [yaml.dump(this.post.header), '---', this.post.rawBody].join("\n\n")
+    } else {
+      return this.post.markdownWithHeader
+    }
   }
 
   set date(value) {

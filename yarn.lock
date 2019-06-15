@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@botanicus/fs-actions@^0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@botanicus/fs-actions/-/fs-actions-0.0.4.tgz#9891773304bf7e964be697b6de0c8568f8991fcb"
-  integrity sha512-AqQkk2x09oxB6/xBP/8K2HBhwD3oroLV5cuS+V/8yDLcK6OkUmgLQBe6Qq6w67O6f8En5UE0l3f3ppa3Hb2YBg==
+"@botanicus/fs-actions@^0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@botanicus/fs-actions/-/fs-actions-0.0.5.tgz#4cbf298c943147b3c9677473647db67308626de7"
+  integrity sha512-UXROyLpYxcVJxX4UdaYrMJfwbjPrstJ5IY6YBRQrpo8rLYB8Y1ZBmEmiUFOguoTERAcFa/vAsvoP6tmMC355Gw==
 
 abab@^2.0.0:
   version "2.0.0"

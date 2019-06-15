@@ -81,7 +81,7 @@ function generateNewPost (post, actions, contentDirectory, outputDirectory) {
   actions.add(new FileWriteAction(location.outputFile, JSON.stringify(post.asJSON())))
 
   actions.add(new MoveFileAction(location.originalSourceDirectory, location.standardizedSourceDirectory))
-  actions.add(new FileWriteAction(location.standardizedSourceFile, post.content))
+  actions.add(new FileWriteAction(location.standardizedSourceFile, post.serialize()))
   actions.add(new GitAddAction(process.cwd(), [location.standardizedSourceDirectory]))
 
   if (location.originalSourceDirectory !== location.standardizedSourceDirectory) {
