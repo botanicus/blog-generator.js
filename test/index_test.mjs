@@ -74,7 +74,8 @@ describe('generate()', () => {
       assert.equal(createSecondPostJSONAction.constructor.name, 'FileWriteAction')
       assert.equal(createSecondPostJSONAction.targetFilePath, `${outputDirectory}/${todayTimestamp}-new-post/new-post.json`)
       const secondPostContent = JSON.parse(createSecondPostJSONAction.content)
-      assert.ok(secondPostContent.date.match(/^xxxx+$/)) /////
+      // 2019-06-15T00:26:59.189Z
+      assert.ok(secondPostContent.date.match(/^20\d{2}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d+Z$/))
       delete secondPostContent.date
       assert.deepEqual(secondPostContent, {
         title: 'New post',
