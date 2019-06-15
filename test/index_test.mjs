@@ -1,6 +1,9 @@
 import fs from 'fs'
 import assert from 'assert'
 import { validate, generate } from '../index.mjs'
+import timekeeper from 'timekeeper'
+
+timekeeper.travel(new Date(2019, 5, 15, 14))
 
 const outputDirectory  = 'test/assets/output-new'
 // describe('validate()', () => {
@@ -61,18 +64,17 @@ describe('generate()', () => {
         tags: []
       })
 
-      const todayTimestamp = '2019-06-15' // FIXME
       const createNewPostLogAction = actions.actions[3]
       assert.equal(createNewPostLogAction.constructor.name, 'ConsoleLogAction')
       assert.equal(createNewPostLogAction._message, 'New post detected new-post, setting published date')
 
       const createSecondPostDirectoryAction = actions.actions[4]
       assert.equal(createSecondPostDirectoryAction.constructor.name, 'CreateDirectoryAction')
-      assert.equal(createSecondPostDirectoryAction.targetDirectoryPath, `${outputDirectory}/${todayTimestamp}-new-post`)
+      assert.equal(createSecondPostDirectoryAction.targetDirectoryPath, `${outputDirectory}/2019-06-15-new-post`)
 
       const createSecondPostJSONAction = actions.actions[5]
       assert.equal(createSecondPostJSONAction.constructor.name, 'FileWriteAction')
-      assert.equal(createSecondPostJSONAction.targetFilePath, `${outputDirectory}/${todayTimestamp}-new-post/new-post.json`)
+      assert.equal(createSecondPostJSONAction.targetFilePath, `${outputDirectory}/2019-06-15-new-post/new-post.json`)
       const secondPostContent = JSON.parse(createSecondPostJSONAction.content)
       // 2019-06-15T00:26:59.189Z
       assert.ok(secondPostContent.date.match(/^20\d{2}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d+Z$/))
@@ -88,21 +90,26 @@ describe('generate()', () => {
       const renameSlugAction = actions.actions[6]
       assert.equal(renameSlugAction.constructor.name, 'MoveFileAction')
       assert.equal(renameSlugAction.sourceFile, 'test/assets/content/2019-06-03-new-post')
-      assert.equal(renameSlugAction.targetDirectory, `test/assets/content/${todayTimestamp}-new-post`)
+      assert.equal(renameSlugAction.targetDirectory, `test/assets/content/2019-06-15-new-post`)
 
       const createSecondPostSourceAction = actions.actions[7]
       assert.equal(createSecondPostSourceAction.constructor.name, 'FileWriteAction')
-      assert.equal(createSecondPostSourceAction.targetFilePath, `${contentDirectory}/${todayTimestamp}-new-post/new-post.md`)
-      assert.equal(createSecondPostSourceAction.content, "date: xxx\n\n---\n\n# New post\n\n_Test_\n")
+      assert.equal(createSecondPostSourceAction.targetFilePath, `${contentDirectory}/2019-06-15-new-post/new-post.md`)
+      assert.equal(createSecondPostSourceAction.content, "date: 2019-06-15 14:00:00\n\n---\n\n# New post\n\n_Test_\n")
 
       const gitAddSecondPostSourceAction = actions.actions[8]
       assert.equal(gitAddSecondPostSourceAction.constructor.name, 'GitAddAction')
-      assert.equal(gitAddSecondPostSourceAction.gitRootDirectory, outputDirectory)
-      assert.deepEqual(gitAddSecondPostSourceAction.paths, [`${contentDirectory}/${todayTimestamp}-new-post`])
+      assert.equal(gitAddSecondPostSourceAction.gitRootDirectory, process.cwd())
+      assert.deepEqual(gitAddSecondPostSourceAction.paths, [`${contentDirectory}/2019-06-15-new-post`])
 
-      const gitCommitSecondPostSourceAction = actions.actions[9]
+      const gitRemoveOldSourceDirectoryAction = actions.actions[9]
+      assert.equal(gitRemoveOldSourceDirectoryAction.constructor.name, 'GitRemoveAction')
+      assert.equal(gitRemoveOldSourceDirectoryAction.gitRootDirectory, process.cwd())
+      assert.deepEqual(gitRemoveOldSourceDirectoryAction.paths, ['test/assets/content/2019-06-15-new-post'])
+
+      const gitCommitSecondPostSourceAction = actions.actions[10]
       assert.equal(gitCommitSecondPostSourceAction.constructor.name, 'GitCommitAction')
-      assert.equal(gitCommitSecondPostSourceAction.gitRootDirectory, outputDirectory)
+      assert.equal(gitCommitSecondPostSourceAction.gitRootDirectory, process.cwd())
       assert.equal(gitCommitSecondPostSourceAction._message, 'Post New post published')
     })
   })
