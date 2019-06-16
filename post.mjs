@@ -6,7 +6,7 @@
 import fs from 'fs'
 import { ensure } from './utils.mjs'
 import PostParser from './post/parser.mjs'
-import PostLocation from './post/location.mjs'
+import PathRouter from './post/router.mjs'
 import yaml from 'js-yaml'
 
 function appendLeadingZeroes(n) {
@@ -90,6 +90,6 @@ export default class Post {
   }
 
   getLocation(contentDirectory, outputDirectory) {
-    return new PostLocation(this.originalFileTimestamp, this.timestamp, this.slug, contentDirectory, outputDirectory)
+    return new PathRouter(this.originalFileTimestamp, this.timestamp, this.slug, contentDirectory, outputDirectory)
   }
 }
