@@ -1,0 +1,79 @@
+- type: CreateDirectoryAction
+  targetDirectoryPath: test/assets/output-new
+- type: CreateDirectoryAction
+  targetDirectoryPath: test/assets/output-new/2019-06-01-hello-world
+- type: FileWriteAction
+  targetFilePath: test/assets/output-new/2019-06-01-hello-world/hello-world.json
+  content: >
+    {"title":"Hello
+    world","slug":"hello-world","date":"2019-06-01T16:50:00Z","excerpt":"Test","body":"","tags":["intro"]}
+- type: FileWriteAction
+  targetFilePath: test/assets/output-new/posts.json
+  content: >
+    [{"title":"Hello
+    world","slug":"hello-world","date":"2019-06-01T16:50:00Z","excerpt":"Test","tags":["intro"]}]
+- type: EnsureDirectoryAction
+  targetDirectoryPath: test/assets/output-new/tags
+- type: FileWriteAction
+  targetFilePath: test/assets/output-new/tags/intro.json
+  content: >
+    [{"title":"Hello
+    world","slug":"hello-world","date":"2019-06-01T16:50:00Z","excerpt":"Test","tags":["intro"]}]
+- type: GitAddAction
+  gitRootDirectory: /root/blog-generator.js
+  options: !<tag:yaml.org,2002:js/undefined> ''
+  paths:
+    - test/assets/content
+    - test/assets/output-new
+- type: GitCommitAction
+  gitRootDirectory: /root/blog-generator.js
+  options:
+    soft: true
+  message: Edits
+- type: ConsoleLogAction
+  message: New post published
+- type: CreateDirectoryAction
+  targetDirectoryPath: test/assets/output-new/2019-06-15-new-post
+- type: FileWriteAction
+  targetFilePath: test/assets/output-new/2019-06-15-new-post/new-post.json
+  content: >
+    {"title":"New
+    post","slug":"new-post","date":"2019-06-15T14:00:00Z","excerpt":"Test","body":"","tags":[]}
+- type: MoveFileAction
+  sourceFile: test/assets/content/2019-06-03-new-post
+  targetDirectory: test/assets/content/2019-06-15-new-post
+- type: FileWriteAction
+  targetFilePath: test/assets/content/2019-06-15-new-post/new-post.md
+  content: |
+    date: 2019-06-15 14:00:00
+
+    ---
+
+    # New post
+
+    _Test_
+- type: FileWriteAction
+  targetFilePath: test/assets/output-new/posts.json
+  content: >
+    [{"title":"Hello
+    world","slug":"hello-world","date":"2019-06-01T16:50:00Z","excerpt":"Test","tags":["intro"]},{"title":"New
+    post","slug":"new-post","date":"2019-06-15T14:00:00Z","excerpt":"Test","tags":[]}]
+- type: EnsureDirectoryAction
+  targetDirectoryPath: test/assets/output-new/tags
+- type: FileWriteAction
+  targetFilePath: test/assets/output-new/tags/intro.json
+  content: >
+    [{"title":"Hello
+    world","slug":"hello-world","date":"2019-06-01T16:50:00Z","excerpt":"Test","tags":["intro"]}]
+- type: RemoveDirectoryAction
+  targetDirectoryPath: test/assets/content/2019-06-03-new-post
+- type: GitAddAction
+  gitRootDirectory: /root/blog-generator.js
+  options: !<tag:yaml.org,2002:js/undefined> ''
+  paths:
+    - test/assets/content
+    - test/assets/output-new
+- type: GitCommitAction
+  gitRootDirectory: /root/blog-generator.js
+  options: {}
+  message: Post New post published
