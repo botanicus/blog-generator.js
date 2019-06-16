@@ -1,3 +1,5 @@
+/* TODO: Move to fs-actions. */
+
 import fs from 'fs'
 import yaml from 'js-yaml'
 
@@ -16,8 +18,6 @@ export function loadSnapshot (path) {
     delete action.type
     const signature = getConstructorSignature(constructor)
     const params = signature.map((argumentName) => action[argumentName])
-    console.log(signature)
-    console.log(constructor.name, params)
     return new constructor(...params)
   })
   return new pkg.FileSystemActions(...actions)

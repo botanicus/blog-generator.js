@@ -1,5 +1,5 @@
 import assert from 'assert'
-import Post from '../parser.mjs'
+import Post from '../../post/parser.mjs'
 
 const markdownWithoutHeader = `
 # Hello world

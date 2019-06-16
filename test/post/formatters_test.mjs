@@ -1,5 +1,5 @@
 import assert from 'assert'
-import { formatLongPostObject, formatShortPostObject } from '../post/formatters.mjs'
+import { formatLongPostObject, formatShortPostObject } from '../../post/formatters.mjs'
 
 const basicPost = {
   title: 'Hello world',
