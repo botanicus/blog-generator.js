@@ -78,8 +78,8 @@ export function generate (contentDirectory, outputDirectory) {
       generateIndex(posts, actions, outputDirectory)
       generateTagIndices(posts, actions, outputDirectory)
 
-      if (location.originalSourceDirectory !== location.standardizedSourceDirectory) {
-        actions.add(new RemoveDirectoryAction(location.originalSourceDirectory))
+      if (location.getOriginalSourceDirectory() !== location.getStandardizedSourceDirectory) {
+        actions.add(new RemoveDirectoryAction(location.getOriginalSourceDirectory()))
       }
 
       actions.add(new GitAddAction(process.cwd(), [contentDirectory, outputDirectory]))
@@ -97,8 +97,8 @@ export function generate (contentDirectory, outputDirectory) {
 
 /* Existing post has always consistency in the original timestamp and the actual one from the date YAML header. */
 function regenerateExistingPost (post, actions, location) {
-  actions.add(new CreateDirectoryAction(location.outputDirectory))
-  actions.add(new FileWriteAction(location.outputFile, formatDataForFile(JSON.stringify(post.asJSON()))))
+  actions.add(new CreateDirectoryAction(location.getOutputDirectory()))
+  actions.add(new FileWriteAction(location.getOutputFile(), formatDataForFile(JSON.stringify(post.asJSON()))))
 }
 
 function generateNewPost (post, actions, contentDirectory, outputDirectory) {
@@ -109,11 +109,11 @@ function generateNewPost (post, actions, contentDirectory, outputDirectory) {
 
   actions.add(new ConsoleLogAction(`${post.title} published`))
 
-  actions.add(new CreateDirectoryAction(location.outputDirectory))
-  actions.add(new FileWriteAction(location.outputFile, formatDataForFile(JSON.stringify(post.asJSON())))
+  actions.add(new CreateDirectoryAction(location.getOutputDirectory()))
+  actions.add(new FileWriteAction(location.getOutputFile(), formatDataForFile(JSON.stringify(post.asJSON())))
   )
-  actions.add(new MoveFileAction(location.originalSourceDirectory, location.standardizedSourceDirectory))
-  actions.add(new FileWriteAction(location.standardizedSourceFile, post.serialize()))
+  actions.add(new MoveFileAction(location.getOriginalSourceDirectory(), location.getStandardizedSourceDirectory))
+  actions.add(new FileWriteAction(location.getStandardizedSourceFile(), post.serialize()))
 
   return location
 }

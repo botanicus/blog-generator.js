@@ -13,32 +13,32 @@ export default class PostLocation {
   }
 
  /* ${contentDirectory}/posts/2019-06-01-hello-world */
-  get originalSourceDirectory() {
+  getOriginalSourceDirectory() {
     return path.join(this._contentDirectory, `${this.originalFileTimestamp}-${this.slug}`)
   }
 
  /* ${contentDirectory}/posts/2019-06-01-hello-world/hello-world.md */
-  get originalSourceFile() {
-    return path.join(this.originalSourceDirectory, `${this.slug}.md`)
+  getOriginalSourceFile(basename = `${this.slug}.md`) {
+    return path.join(this.getOriginalSourceDirectory, basename)
   }
 
  /* ${contentDirectory}/posts/2019-06-01-hello-world */
-  get standardizedSourceDirectory() {
+  getStandardizedSourceDirectory() {
     return path.join(this._contentDirectory, `${this.publishedDateTimestamp}-${this.slug}`)
   }
 
  /* ${contentDirectory}/posts/2019-06-01-hello-world/hello-world.md */
-  get standardizedSourceFile() {
-    return path.join(this.standardizedSourceDirectory, `${this.slug}.md`)
+  getStandardizedSourceFile(basename = `${this.slug}.md`) {
+    return path.join(this.getStandardizedSourceDirectory, basename)
   }
 
  /* ${outpoutDirectory}/posts/2019-06-01-hello-world */
-  get outputDirectory() {
+  outputDirectory() {
     return path.join(this._outputDirectory, `${this.publishedDateTimestamp}-${this.slug}`)
   }
 
  /* ${outpoutDirectory}/posts/2019-06-01-hello-world/hello-world.json */
-  get outputFile() {
-    return path.join(this.outputDirectory, `${this.slug}.json`)
+  getOutputFile(basename = `${this.slug}.json`) {
+    return path.join(this.outputDirectory, basename)
   }
 }
