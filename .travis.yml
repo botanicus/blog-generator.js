@@ -9,4 +9,5 @@ notifications:
 cache: yarn
 
 script:
+  - ruby -p -i.orig -e 'gsub("/root/blog-generator.js", Dir.pwd)' test/snapshot.yml
   - yarn test test/*.mjs

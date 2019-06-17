@@ -1,3 +1,4 @@
+// TODO: Validate the actions! Currently if there's for instance mispellt external file, it won't get unnoticed until the commit()
 import fs from 'fs'
 
 import {
