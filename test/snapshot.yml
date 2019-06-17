@@ -29,22 +29,22 @@
 - type: FileWriteAction
   targetFilePath: test/assets/output-new/tags/intro.json
   content: >
-    {"tag":{"name":"intro","slug":"intro","path":"/tags/intro.json"},"posts":[{"title":"Hello
+    {"name":"intro","slug":"intro","path":"/tags/intro.json","posts":[{"title":"Hello
     world","slug":"hello-world","date":"2019-06-01T16:50:00Z","excerpt":"Hello
     world!","tags":[{"name":"intro","slug":"intro","path":"/tags/intro.json"},{"name":"cute
     kitty","slug":"cute-kitty","path":"/tags/cute-kitty.json"},{"name":"CV","slug":"cv","path":"/tags/cv.json"}]}]}
 - type: FileWriteAction
   targetFilePath: test/assets/output-new/tags/cute-kitty.json
   content: >
-    {"tag":{"name":"cute
-    kitty","slug":"cute-kitty","path":"/tags/cute-kitty.json"},"posts":[{"title":"Hello
+    {"name":"cute
+    kitty","slug":"cute-kitty","path":"/tags/cute-kitty.json","posts":[{"title":"Hello
     world","slug":"hello-world","date":"2019-06-01T16:50:00Z","excerpt":"Hello
     world!","tags":[{"name":"intro","slug":"intro","path":"/tags/intro.json"},{"name":"cute
     kitty","slug":"cute-kitty","path":"/tags/cute-kitty.json"},{"name":"CV","slug":"cv","path":"/tags/cv.json"}]}]}
 - type: FileWriteAction
   targetFilePath: test/assets/output-new/tags/cv.json
   content: >
-    {"tag":{"name":"CV","slug":"cv","path":"/tags/cv.json"},"posts":[{"title":"Hello
+    {"name":"CV","slug":"cv","path":"/tags/cv.json","posts":[{"title":"Hello
     world","slug":"hello-world","date":"2019-06-01T16:50:00Z","excerpt":"Hello
     world!","tags":[{"name":"intro","slug":"intro","path":"/tags/intro.json"},{"name":"cute
     kitty","slug":"cute-kitty","path":"/tags/cute-kitty.json"},{"name":"CV","slug":"cv","path":"/tags/cv.json"}]}]}
@@ -94,22 +94,22 @@
 - type: FileWriteAction
   targetFilePath: test/assets/output-new/tags/intro.json
   content: >
-    {"tag":{"name":"intro","slug":"intro","path":"/tags/intro.json"},"posts":[{"title":"Hello
+    {"name":"intro","slug":"intro","path":"/tags/intro.json","posts":[{"title":"Hello
     world","slug":"hello-world","date":"2019-06-01T16:50:00Z","excerpt":"Hello
     world!","tags":[{"name":"intro","slug":"intro","path":"/tags/intro.json"},{"name":"cute
     kitty","slug":"cute-kitty","path":"/tags/cute-kitty.json"},{"name":"CV","slug":"cv","path":"/tags/cv.json"}]}]}
 - type: FileWriteAction
   targetFilePath: test/assets/output-new/tags/cute-kitty.json
   content: >
-    {"tag":{"name":"cute
-    kitty","slug":"cute-kitty","path":"/tags/cute-kitty.json"},"posts":[{"title":"Hello
+    {"name":"cute
+    kitty","slug":"cute-kitty","path":"/tags/cute-kitty.json","posts":[{"title":"Hello
     world","slug":"hello-world","date":"2019-06-01T16:50:00Z","excerpt":"Hello
     world!","tags":[{"name":"intro","slug":"intro","path":"/tags/intro.json"},{"name":"cute
     kitty","slug":"cute-kitty","path":"/tags/cute-kitty.json"},{"name":"CV","slug":"cv","path":"/tags/cv.json"}]}]}
 - type: FileWriteAction
   targetFilePath: test/assets/output-new/tags/cv.json
   content: >
-    {"tag":{"name":"CV","slug":"cv","path":"/tags/cv.json"},"posts":[{"title":"Hello
+    {"name":"CV","slug":"cv","path":"/tags/cv.json","posts":[{"title":"Hello
     world","slug":"hello-world","date":"2019-06-01T16:50:00Z","excerpt":"Hello
     world!","tags":[{"name":"intro","slug":"intro","path":"/tags/intro.json"},{"name":"cute
     kitty","slug":"cute-kitty","path":"/tags/cute-kitty.json"},{"name":"CV","slug":"cv","path":"/tags/cv.json"}]}]}
@@ -124,4 +124,4 @@
 - type: GitCommitAction
   gitRootDirectory: /root/blog-generator.js
   options: {}
-  message: Post New post published
+  message: Post 'New post' published
