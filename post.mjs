@@ -7,6 +7,7 @@ import fs from 'fs'
 import { ensure } from './utils.mjs'
 import PostParser from './post/parser.mjs'
 import PathRouter from './post/router.mjs'
+import Tag from './tag.mjs'
 import yaml from 'js-yaml'
 
 function appendLeadingZeroes(n) {
@@ -57,7 +58,7 @@ export default class Post {
   }
 
   get tags() {
-    return this.header.tags || []
+    return (this.header.tags || []).map((tagName) => new Tag(tagName))
   }
 
   get title() {
@@ -69,7 +70,11 @@ export default class Post {
   }
 
   get body() {
-    return this.post.parseBody().body
+    return this.post.parseBody()
+  }
+
+  get externalFiles() {
+    return this.body.getExternalFiles()
   }
 
   asJSON() {
@@ -78,8 +83,8 @@ export default class Post {
       slug: this.slug,
       date: this.date,
       excerpt: this.excerpt,
-      body: this.body,
-      tags: this.tags
+      body: this.body.body,
+      tags: this.tags.map(tag => tag.asJSON())
     }
   }
 

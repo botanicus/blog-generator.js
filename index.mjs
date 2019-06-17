@@ -8,6 +8,7 @@ import {
 import {
   FileSystemActions,
   MoveFileAction,
+  CopyFileAction,
   FileWriteAction,
   CreateDirectoryAction,
   EnsureDirectoryAction,
@@ -23,6 +24,7 @@ import {
 } from '@botanicus/fs-actions/git.mjs'
 
 import Post from './post.mjs'
+import Tag from './tag.mjs'
 
 export function validate (contentDirectory) {
   const posts = loadAllPosts(contentDirectory)
@@ -99,6 +101,15 @@ export function generate (contentDirectory, outputDirectory) {
 function regenerateExistingPost (post, actions, location) {
   actions.add(new CreateDirectoryAction(location.output.getDirectoryPath()))
   actions.add(new FileWriteAction(location.output.getFilePath(), formatDataForFile(JSON.stringify(post.asJSON()))))
+  copyExternalImages(actions, post, location)
+}
+
+function copyExternalImages (actions, post, location) {
+  post.externalFiles.forEach((basename) => {
+    const origin = location.originalSource.getFilePath(basename)
+    const target = location.output.getFilePath(basename)
+    actions.add(new CopyFileAction(origin, target))
+  })
 }
 
 function generateNewPost (post, actions, contentDirectory, outputDirectory) {
@@ -114,6 +125,8 @@ function generateNewPost (post, actions, contentDirectory, outputDirectory) {
   )
   actions.add(new MoveFileAction(location.originalSource.getDirectoryPath(), location.standardizedSource.getDirectoryPath()))
   actions.add(new FileWriteAction(location.standardizedSource.getFilePath(), post.serialize()))
+
+  copyExternalImages(actions, post, location)
 
   return location
 }
@@ -143,27 +156,18 @@ function generateIndex (posts, actions, outputDirectory) {
   ))
 }
 
-function buildTagMap (posts) {
-  return posts.reduce((tags, post) => {
-    post.tags.forEach((tag) => {
-      if (!tags[tag]) tags[tag] = []
-      tags[tag].push(post)
-    })
-    return tags
-  }, {})
-}
 
 function generateTagIndices (posts, actions, outputDirectory) {
-  const entries = Object.entries(buildTagMap(posts))
+  const entries = Object.entries(Tag.buildMap(posts))
 
   if (!entries.length) return
 
   actions.add(new EnsureDirectoryAction(`${outputDirectory}/tags`))
 
-  for (const [tag, postsForTag] of entries) {
+  for (const [tagSlug, tagPostsEntry] of entries) {
     actions.add(new FileWriteAction(
-      `${outputDirectory}/tags/${tag}.json`,
-      formatDataForFile(JSON.stringify(postsForTag.map((post) => post.asShortJSON())))
+      `${outputDirectory}/tags/${tagPostsEntry.tag.slug}.json`,
+      formatDataForFile(JSON.stringify({tag: tagPostsEntry.tag.asJSON(), posts: tagPostsEntry.posts.map(post => post.asShortJSON())}))
     ))
   }
 }

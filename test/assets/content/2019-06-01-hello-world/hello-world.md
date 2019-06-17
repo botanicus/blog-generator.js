@@ -1,8 +1,14 @@
 date: 2019-06-01 16:50:00
-tags: ["intro"]
+tags: ["intro", "cute kitty", "CV"]
 
 ---
 
 # Hello world
 
-_Test_
+_Hello world!_
+
+Check out this cute kitty image:
+
+![kitty image](kitty.png)
+
+Here's a [link](CV.pdf).
