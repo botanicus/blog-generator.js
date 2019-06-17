@@ -45,6 +45,7 @@ describe('generate()', () => {
     it('creates the post directory', () => {
       const savedStateActions = loadSnapshot('test/snapshot.yml')
       const actions = generate(contentDirectory, outputDirectory)
+      // saveSnapshot('test/snapshot.yml', actions)
 
       assert.deepEqual(actions, savedStateActions)
     })

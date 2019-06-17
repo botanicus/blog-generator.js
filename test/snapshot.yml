@@ -6,22 +6,51 @@
   targetFilePath: test/assets/output-new/2019-06-01-hello-world/hello-world.json
   content: >
     {"title":"Hello
-    world","slug":"hello-world","date":"2019-06-01T16:50:00Z","excerpt":"Test","body":"","tags":["intro"]}
+    world","slug":"hello-world","date":"2019-06-01T16:50:00Z","excerpt":"Hello
+    world!","body":"Check out this cute kitty image:\n\n![kitty
+    image](kitty.png)\n\nHere's a
+    [link](CV.pdf).","tags":[{"name":"intro","slug":"intro","path":"/tags/intro.json"},{"name":"cute
+    kitty","slug":"cute-kitty","path":"/tags/cute-kitty.json"},{"name":"CV","slug":"cv","path":"/tags/cv.json"}]}
+- type: CopyFileAction
+  sourceFile: test/assets/content/2019-06-01-hello-world/kitty.png
+  targetFile: test/assets/output-new/2019-06-01-hello-world/kitty.png
+- type: CopyFileAction
+  sourceFile: test/assets/content/2019-06-01-hello-world/CV.pdf
+  targetFile: test/assets/output-new/2019-06-01-hello-world/CV.pdf
 - type: FileWriteAction
   targetFilePath: test/assets/output-new/posts.json
   content: >
     [{"title":"Hello
-    world","slug":"hello-world","date":"2019-06-01T16:50:00Z","excerpt":"Test","tags":["intro"]}]
+    world","slug":"hello-world","date":"2019-06-01T16:50:00Z","excerpt":"Hello
+    world!","tags":[{"name":"intro","slug":"intro","path":"/tags/intro.json"},{"name":"cute
+    kitty","slug":"cute-kitty","path":"/tags/cute-kitty.json"},{"name":"CV","slug":"cv","path":"/tags/cv.json"}]}]
 - type: EnsureDirectoryAction
   targetDirectoryPath: test/assets/output-new/tags
 - type: FileWriteAction
   targetFilePath: test/assets/output-new/tags/intro.json
   content: >
-    [{"title":"Hello
-    world","slug":"hello-world","date":"2019-06-01T16:50:00Z","excerpt":"Test","tags":["intro"]}]
+    {"tag":{"name":"intro","slug":"intro","path":"/tags/intro.json"},"posts":[{"title":"Hello
+    world","slug":"hello-world","date":"2019-06-01T16:50:00Z","excerpt":"Hello
+    world!","tags":[{"name":"intro","slug":"intro","path":"/tags/intro.json"},{"name":"cute
+    kitty","slug":"cute-kitty","path":"/tags/cute-kitty.json"},{"name":"CV","slug":"cv","path":"/tags/cv.json"}]}]}
+- type: FileWriteAction
+  targetFilePath: test/assets/output-new/tags/cute-kitty.json
+  content: >
+    {"tag":{"name":"cute
+    kitty","slug":"cute-kitty","path":"/tags/cute-kitty.json"},"posts":[{"title":"Hello
+    world","slug":"hello-world","date":"2019-06-01T16:50:00Z","excerpt":"Hello
+    world!","tags":[{"name":"intro","slug":"intro","path":"/tags/intro.json"},{"name":"cute
+    kitty","slug":"cute-kitty","path":"/tags/cute-kitty.json"},{"name":"CV","slug":"cv","path":"/tags/cv.json"}]}]}
+- type: FileWriteAction
+  targetFilePath: test/assets/output-new/tags/cv.json
+  content: >
+    {"tag":{"name":"CV","slug":"cv","path":"/tags/cv.json"},"posts":[{"title":"Hello
+    world","slug":"hello-world","date":"2019-06-01T16:50:00Z","excerpt":"Hello
+    world!","tags":[{"name":"intro","slug":"intro","path":"/tags/intro.json"},{"name":"cute
+    kitty","slug":"cute-kitty","path":"/tags/cute-kitty.json"},{"name":"CV","slug":"cv","path":"/tags/cv.json"}]}]}
 - type: GitAddAction
   gitRootDirectory: /root/blog-generator.js
-  options: !<tag:yaml.org,2002:js/undefined> ''
+  options: {}
   paths:
     - test/assets/content
     - test/assets/output-new
@@ -41,7 +70,7 @@
     post","slug":"new-post","date":"2019-06-15T14:00:00Z","excerpt":"Test","body":"","tags":[]}
 - type: MoveFileAction
   sourceFile: test/assets/content/2019-06-03-new-post
-  targetDirectory: test/assets/content/2019-06-15-new-post
+  targetFile: test/assets/content/2019-06-15-new-post
 - type: FileWriteAction
   targetFilePath: test/assets/content/2019-06-15-new-post/new-post.md
   content: |
@@ -56,20 +85,39 @@
   targetFilePath: test/assets/output-new/posts.json
   content: >
     [{"title":"Hello
-    world","slug":"hello-world","date":"2019-06-01T16:50:00Z","excerpt":"Test","tags":["intro"]},{"title":"New
+    world","slug":"hello-world","date":"2019-06-01T16:50:00Z","excerpt":"Hello
+    world!","tags":[{"name":"intro","slug":"intro","path":"/tags/intro.json"},{"name":"cute
+    kitty","slug":"cute-kitty","path":"/tags/cute-kitty.json"},{"name":"CV","slug":"cv","path":"/tags/cv.json"}]},{"title":"New
     post","slug":"new-post","date":"2019-06-15T14:00:00Z","excerpt":"Test","tags":[]}]
 - type: EnsureDirectoryAction
   targetDirectoryPath: test/assets/output-new/tags
 - type: FileWriteAction
   targetFilePath: test/assets/output-new/tags/intro.json
   content: >
-    [{"title":"Hello
-    world","slug":"hello-world","date":"2019-06-01T16:50:00Z","excerpt":"Test","tags":["intro"]}]
+    {"tag":{"name":"intro","slug":"intro","path":"/tags/intro.json"},"posts":[{"title":"Hello
+    world","slug":"hello-world","date":"2019-06-01T16:50:00Z","excerpt":"Hello
+    world!","tags":[{"name":"intro","slug":"intro","path":"/tags/intro.json"},{"name":"cute
+    kitty","slug":"cute-kitty","path":"/tags/cute-kitty.json"},{"name":"CV","slug":"cv","path":"/tags/cv.json"}]}]}
+- type: FileWriteAction
+  targetFilePath: test/assets/output-new/tags/cute-kitty.json
+  content: >
+    {"tag":{"name":"cute
+    kitty","slug":"cute-kitty","path":"/tags/cute-kitty.json"},"posts":[{"title":"Hello
+    world","slug":"hello-world","date":"2019-06-01T16:50:00Z","excerpt":"Hello
+    world!","tags":[{"name":"intro","slug":"intro","path":"/tags/intro.json"},{"name":"cute
+    kitty","slug":"cute-kitty","path":"/tags/cute-kitty.json"},{"name":"CV","slug":"cv","path":"/tags/cv.json"}]}]}
+- type: FileWriteAction
+  targetFilePath: test/assets/output-new/tags/cv.json
+  content: >
+    {"tag":{"name":"CV","slug":"cv","path":"/tags/cv.json"},"posts":[{"title":"Hello
+    world","slug":"hello-world","date":"2019-06-01T16:50:00Z","excerpt":"Hello
+    world!","tags":[{"name":"intro","slug":"intro","path":"/tags/intro.json"},{"name":"cute
+    kitty","slug":"cute-kitty","path":"/tags/cute-kitty.json"},{"name":"CV","slug":"cv","path":"/tags/cv.json"}]}]}
 - type: RemoveDirectoryAction
   targetDirectoryPath: test/assets/content/2019-06-03-new-post
 - type: GitAddAction
   gitRootDirectory: /root/blog-generator.js
-  options: !<tag:yaml.org,2002:js/undefined> ''
+  options: {}
   paths:
     - test/assets/content
     - test/assets/output-new

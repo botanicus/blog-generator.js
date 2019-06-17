@@ -81,8 +81,8 @@ export default class PostParser {
 
 class Body {
   constructor(dom, rawBody) {
-    this.document = ensure(dom, 'Body: dom is required')
-    this.rawBody = ensure(rawBody, 'Body: rawBody is required')
+    this.document = ensure(dom, `${this.constructor.name}: dom is required`)
+    this.rawBody = ensure(rawBody, `${this.constructor.name}: rawBody is required`)
   }
 
   get title() {
@@ -113,5 +113,17 @@ class Body {
     if (node.tagName !== expectedTagName) {
       throw `The first element is supposed to be ${expectedTagName} tag, was ${node.nodeName} ${node}`
     }
+  }
+
+  getArrayOf(tagName) {
+    const elements = this.document.querySelectorAll(tagName)
+    return Array.from(elements)
+  }
+
+  /* img, a */
+  getExternalFiles() {
+    const images = this.getArrayOf('img').map((image) => image.src)
+    const links = this.getArrayOf('a').map((link) => link.href)
+    return images.concat(links).filter((link) => link.match(/^[^/]+\.(png|jpg|gif|pdf)$/))
   }
 }
