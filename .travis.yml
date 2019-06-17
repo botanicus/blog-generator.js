@@ -8,6 +8,8 @@ notifications:
 
 cache: yarn
 
-script:
+before_script:
   - ruby -p -i.orig -e 'gsub("/root/blog-generator.js", Dir.pwd)' test/snapshot.yml
-  - yarn test test/*.mjs
+
+script:
+  - yarn test test/*_test.mjs test/*/*_test.mjs
