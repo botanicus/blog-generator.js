@@ -37,11 +37,16 @@ export default class Tag {
       .replace(/[:,?!.]/g, '')
   }
 
-  asJSON() {
+  asShortJSON() {
     return {
       name: this.name,
       slug: this.slug,
       path: `/tags/${this.slug}.json`
     }
+  }
+
+  asJSON(posts) {
+    ensure(posts, `${this.constructor.name}.asJSON(): posts are required`)
+    return Object.assign(this.asShortJSON(), {posts: posts.map(post => post.asShortJSON())})
   }
 }

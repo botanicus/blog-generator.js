@@ -166,11 +166,11 @@ function generateTagIndices (posts, actions, outputDirectory) {
   actions.add(new EnsureDirectoryAction(`${outputDirectory}/tags`))
 
   for (const [tagSlug, tagPostsEntry] of entries) {
-    const data = Object.assign(tagPostsEntry.tag.asJSON(), {posts: tagPostsEntry.posts.map(post => post.asShortJSON())})
+    const { tag, posts } = tagPostsEntry
 
     actions.add(new FileWriteAction(
-      `${outputDirectory}/tags/${tagPostsEntry.tag.slug}.json`,
-      formatDataForFile(JSON.stringify(data))
+      `${outputDirectory}/tags/${tag.slug}.json`,
+      formatDataForFile(JSON.stringify(tag.asJSON(posts)))
     ))
   }
 }

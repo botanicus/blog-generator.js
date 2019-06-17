@@ -84,7 +84,7 @@ export default class Post {
       date: this.date,
       excerpt: this.excerpt,
       body: this.body.body,
-      tags: this.tags.map(tag => tag.asJSON())
+      tags: this.tags.map(tag => tag.asShortJSON())
     }
   }
 
