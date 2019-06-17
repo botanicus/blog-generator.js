@@ -81,7 +81,7 @@ export function generate (contentDirectory, outputDirectory) {
       generateIndex(posts, actions, outputDirectory)
       generateTagIndices(posts, actions, outputDirectory)
 
-      if (location.originalSource.getDirectoryPath() !== location.standardizedSource.getDirectory) {
+      if (location.hasSourceDirectoryChanged()) {
         actions.add(new RemoveDirectoryAction(location.originalSource.getDirectoryPath()))
       }
 
