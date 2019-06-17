@@ -34,4 +34,8 @@ export default class PathRouter {
     this.standardizedSource = new Location(publishedDateTimestamp, slug, contentDirectory, `${slug}.md`)
     this.output = new Location(publishedDateTimestamp, slug, outputDirectory, `${slug}.json`)
   }
+
+  hasSourceDirectoryChanged() {
+    return this.originalSource.getDirectoryPath() !== this.standardizedSource.getDirectoryPath()
+  }
 }
