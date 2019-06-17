@@ -88,9 +88,9 @@ export function generate (contentDirectory, outputDirectory) {
       actions.add(new GitAddAction(process.cwd(), [contentDirectory, outputDirectory]))
 
       if (post.tags.length) {
-        actions.add(new GitCommitAction(process.cwd(), `Post ${post.title} published with tags ${post.tags.join(' ')}`))
+        actions.add(new GitCommitAction(process.cwd(), `Post '${post.title}' published with tags ${post.tags.map(tag => tag.name).join(', ')}`))
       } else {
-        actions.add(new GitCommitAction(process.cwd(), `Post ${post.title} published`))
+        actions.add(new GitCommitAction(process.cwd(), `Post '${post.title}' published`))
       }
     })
 
