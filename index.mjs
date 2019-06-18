@@ -67,7 +67,7 @@ export function generate (contentDirectory, outputDirectory) {
   publishedPosts.forEach((post) => generatePost(post, actions, contentDirectory, outputDirectory))
 
   generateIndex(publishedPosts, actions, outputDirectory)
-  generateTagIndices(publishedPosts, actions, outputDirectory)
+  generateTags(publishedPosts, actions, outputDirectory)
 
   actions.add(new GitAddAction(process.cwd(), [contentDirectory, outputDirectory]))
   actions.add(new GitCommitAction(process.cwd(), 'Edits', {soft: true}))
@@ -79,7 +79,7 @@ export function generate (contentDirectory, outputDirectory) {
       const location = generateNewPost(post, actions, contentDirectory, outputDirectory)
       /* Regenerate for atomicity, in case we have more new posts. */
       generateIndex(posts, actions, outputDirectory)
-      generateTagIndices(posts, actions, outputDirectory)
+      generateTags(posts, actions, outputDirectory)
 
       if (location.hasSourceDirectoryChanged()) {
         actions.add(new RemoveDirectoryAction(location.originalSource.getDirectoryPath()))
@@ -157,15 +157,23 @@ function generateIndex (posts, actions, outputDirectory) {
   ))
 }
 
+function generateTags (posts, actions, outputDirectory) {
+  const tagMap = Tag.buildMap(posts)
+  if (Object.keys(tagMap).length) {
+    generateTagIndices(tagMap, actions, outputDirectory)
+    generateTagIndex(tagMap, actions, outputDirectory)
+  }
+}
 
-function generateTagIndices (posts, actions, outputDirectory) {
-  const entries = Object.entries(Tag.buildMap(posts))
+function generateTagIndex (tagMap, actions, outputDirectory) {
+  const content = Object.values(tagMap).map(({ tag }) => tag.asShortJSON())
+  actions.add(new FileWriteAction(`${outputDirectory}/tags.json`, JSON.stringify(content)))
+}
 
-  if (!entries.length) return
-
+function generateTagIndices (tagMap, actions, outputDirectory) {
   actions.add(new EnsureDirectoryAction(`${outputDirectory}/tags`))
 
-  for (const [tagSlug, tagPostsEntry] of entries) {
+  for (const [tagSlug, tagPostsEntry] of Object.entries(tagMap)) {
     const { tag, posts } = tagPostsEntry
 
     actions.add(new FileWriteAction(

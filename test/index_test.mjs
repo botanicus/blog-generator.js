@@ -47,7 +47,7 @@ describe('generate()', () => {
       const actions = generate(contentDirectory, outputDirectory)
       // saveSnapshot('test/snapshot.yml', actions)
 
-      assert.deepEqual(actions, savedStateActions)
+      assert.deepEqual(savedStateActions, actions)
     })
   })
 })
