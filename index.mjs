@@ -159,8 +159,9 @@ function generateIndex (posts, actions, outputDirectory) {
 
 function generateTags (posts, actions, outputDirectory) {
   const tagMap = Tag.buildMap(posts)
+  generateTagIndices(tagMap, actions, outputDirectory)
+
   if (Object.keys(tagMap).length) {
-    generateTagIndices(tagMap, actions, outputDirectory)
     generateTagIndex(tagMap, actions, outputDirectory)
   }
 }
