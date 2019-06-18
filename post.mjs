@@ -81,7 +81,7 @@ export default class Post {
     return {
       title: this.title,
       slug: this.slug,
-      path: `/posts/${this.timestamp}-${this.slug}/${this.slug}.json`,
+      path: `/posts/${this.slug}/${this.slug}.json`,
       date: this.date,
       excerpt: this.excerpt,
       body: this.body.body,
