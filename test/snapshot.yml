@@ -6,7 +6,7 @@
   targetFilePath: test/assets/output-new/2019-06-01-hello-world/hello-world.json
   content: >
     {"title":"Hello
-    world","slug":"hello-world","date":"2019-06-01T16:50:00Z","excerpt":"Hello
+    world","slug":"hello-world","path":"/posts/hello-world.json","date":"2019-06-01T16:50:00Z","excerpt":"Hello
     world!","body":"Check out this cute kitty image:\n\n![kitty
     image](kitty.png)\n\nHere's a
     [link](CV.pdf).","tags":[{"name":"intro","slug":"intro","path":"/tags/intro.json"},{"name":"cute
@@ -21,7 +21,7 @@
   targetFilePath: test/assets/output-new/posts.json
   content: >
     [{"title":"Hello
-    world","slug":"hello-world","date":"2019-06-01T16:50:00Z","excerpt":"Hello
+    world","slug":"hello-world","path":"/posts/hello-world.json","date":"2019-06-01T16:50:00Z","excerpt":"Hello
     world!","tags":[{"name":"intro","slug":"intro","path":"/tags/intro.json"},{"name":"cute
     kitty","slug":"cute-kitty","path":"/tags/cute-kitty.json"},{"name":"CV","slug":"cv","path":"/tags/cv.json"}]}]
 - type: EnsureDirectoryAction
@@ -30,7 +30,7 @@
   targetFilePath: test/assets/output-new/tags/intro.json
   content: >
     {"name":"intro","slug":"intro","path":"/tags/intro.json","posts":[{"title":"Hello
-    world","slug":"hello-world","date":"2019-06-01T16:50:00Z","excerpt":"Hello
+    world","slug":"hello-world","path":"/posts/hello-world.json","date":"2019-06-01T16:50:00Z","excerpt":"Hello
     world!","tags":[{"name":"intro","slug":"intro","path":"/tags/intro.json"},{"name":"cute
     kitty","slug":"cute-kitty","path":"/tags/cute-kitty.json"},{"name":"CV","slug":"cv","path":"/tags/cv.json"}]}]}
 - type: FileWriteAction
@@ -38,14 +38,14 @@
   content: >
     {"name":"cute
     kitty","slug":"cute-kitty","path":"/tags/cute-kitty.json","posts":[{"title":"Hello
-    world","slug":"hello-world","date":"2019-06-01T16:50:00Z","excerpt":"Hello
+    world","slug":"hello-world","path":"/posts/hello-world.json","date":"2019-06-01T16:50:00Z","excerpt":"Hello
     world!","tags":[{"name":"intro","slug":"intro","path":"/tags/intro.json"},{"name":"cute
     kitty","slug":"cute-kitty","path":"/tags/cute-kitty.json"},{"name":"CV","slug":"cv","path":"/tags/cv.json"}]}]}
 - type: FileWriteAction
   targetFilePath: test/assets/output-new/tags/cv.json
   content: >
     {"name":"CV","slug":"cv","path":"/tags/cv.json","posts":[{"title":"Hello
-    world","slug":"hello-world","date":"2019-06-01T16:50:00Z","excerpt":"Hello
+    world","slug":"hello-world","path":"/posts/hello-world.json","date":"2019-06-01T16:50:00Z","excerpt":"Hello
     world!","tags":[{"name":"intro","slug":"intro","path":"/tags/intro.json"},{"name":"cute
     kitty","slug":"cute-kitty","path":"/tags/cute-kitty.json"},{"name":"CV","slug":"cv","path":"/tags/cv.json"}]}]}
 - type: GitAddAction
@@ -67,7 +67,7 @@
   targetFilePath: test/assets/output-new/2019-06-15-new-post/new-post.json
   content: >
     {"title":"New
-    post","slug":"new-post","date":"2019-06-15T14:00:00Z","excerpt":"Test","body":"","tags":[]}
+    post","slug":"new-post","path":"/posts/new-post.json","date":"2019-06-15T14:00:00Z","excerpt":"Test","body":"","tags":[]}
 - type: MoveFileAction
   sourceFile: test/assets/content/2019-06-03-new-post
   targetFile: test/assets/content/2019-06-15-new-post
@@ -85,17 +85,17 @@
   targetFilePath: test/assets/output-new/posts.json
   content: >
     [{"title":"Hello
-    world","slug":"hello-world","date":"2019-06-01T16:50:00Z","excerpt":"Hello
+    world","slug":"hello-world","path":"/posts/hello-world.json","date":"2019-06-01T16:50:00Z","excerpt":"Hello
     world!","tags":[{"name":"intro","slug":"intro","path":"/tags/intro.json"},{"name":"cute
     kitty","slug":"cute-kitty","path":"/tags/cute-kitty.json"},{"name":"CV","slug":"cv","path":"/tags/cv.json"}]},{"title":"New
-    post","slug":"new-post","date":"2019-06-15T14:00:00Z","excerpt":"Test","tags":[]}]
+    post","slug":"new-post","path":"/posts/new-post.json","date":"2019-06-15T14:00:00Z","excerpt":"Test","tags":[]}]
 - type: EnsureDirectoryAction
   targetDirectoryPath: test/assets/output-new/tags
 - type: FileWriteAction
   targetFilePath: test/assets/output-new/tags/intro.json
   content: >
     {"name":"intro","slug":"intro","path":"/tags/intro.json","posts":[{"title":"Hello
-    world","slug":"hello-world","date":"2019-06-01T16:50:00Z","excerpt":"Hello
+    world","slug":"hello-world","path":"/posts/hello-world.json","date":"2019-06-01T16:50:00Z","excerpt":"Hello
     world!","tags":[{"name":"intro","slug":"intro","path":"/tags/intro.json"},{"name":"cute
     kitty","slug":"cute-kitty","path":"/tags/cute-kitty.json"},{"name":"CV","slug":"cv","path":"/tags/cv.json"}]}]}
 - type: FileWriteAction
@@ -103,14 +103,14 @@
   content: >
     {"name":"cute
     kitty","slug":"cute-kitty","path":"/tags/cute-kitty.json","posts":[{"title":"Hello
-    world","slug":"hello-world","date":"2019-06-01T16:50:00Z","excerpt":"Hello
+    world","slug":"hello-world","path":"/posts/hello-world.json","date":"2019-06-01T16:50:00Z","excerpt":"Hello
     world!","tags":[{"name":"intro","slug":"intro","path":"/tags/intro.json"},{"name":"cute
     kitty","slug":"cute-kitty","path":"/tags/cute-kitty.json"},{"name":"CV","slug":"cv","path":"/tags/cv.json"}]}]}
 - type: FileWriteAction
   targetFilePath: test/assets/output-new/tags/cv.json
   content: >
     {"name":"CV","slug":"cv","path":"/tags/cv.json","posts":[{"title":"Hello
-    world","slug":"hello-world","date":"2019-06-01T16:50:00Z","excerpt":"Hello
+    world","slug":"hello-world","path":"/posts/hello-world.json","date":"2019-06-01T16:50:00Z","excerpt":"Hello
     world!","tags":[{"name":"intro","slug":"intro","path":"/tags/intro.json"},{"name":"cute
     kitty","slug":"cute-kitty","path":"/tags/cute-kitty.json"},{"name":"CV","slug":"cv","path":"/tags/cv.json"}]}]}
 - type: RemoveDirectoryAction
