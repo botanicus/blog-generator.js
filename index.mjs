@@ -193,7 +193,7 @@ function loadAllPosts (postDirectory) {
     const path = `${postDirectory}/${directory}/${slug}.md`
     const post = new Post(slug, path)
     return post
-  })
+  }).reverse()
 }
 
 function prepareOutputDirectory (directory, actions) {
