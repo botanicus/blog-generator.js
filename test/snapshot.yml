@@ -89,11 +89,11 @@
 - type: FileWriteAction
   targetFilePath: test/assets/output-new/posts.json
   content: >
-    [{"title":"Hello
+    [{"title":"New
+    post","slug":"new-post","path":"/posts/new-post/new-post.json","date":"2019-06-15T14:00:00Z","excerpt":"Test","tags":[]},{"title":"Hello
     world","slug":"hello-world","path":"/posts/hello-world/hello-world.json","date":"2019-06-01T16:50:00Z","excerpt":"Hello
     world!","tags":[{"name":"intro","slug":"intro","path":"/tags/intro.json"},{"name":"cute
-    kitty","slug":"cute-kitty","path":"/tags/cute-kitty.json"},{"name":"CV","slug":"cv","path":"/tags/cv.json"}]},{"title":"New
-    post","slug":"new-post","path":"/posts/new-post/new-post.json","date":"2019-06-15T14:00:00Z","excerpt":"Test","tags":[]}]
+    kitty","slug":"cute-kitty","path":"/tags/cute-kitty.json"},{"name":"CV","slug":"cv","path":"/tags/cv.json"}]}]
 - type: FileWriteAction
   targetFilePath: test/assets/output-new/tags.json
   content: >-
