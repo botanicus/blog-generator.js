@@ -38,7 +38,7 @@ export default class PostParser {
   }
 
   get rawBody() {
-    return this.split()[1]
+    return this.runFilters(this.split()[1])
   }
 
   /*
@@ -53,6 +53,11 @@ export default class PostParser {
   }
 
   /* Private. */
+  runFilters(blob) {
+    /* ![](hello-kitty.png) -> ![](posts/first-entry/hello-kitty.png) */
+    /* [](CV.pdf) -> ![](posts/first-entry/CV.pdf) */
+    return blob.replace(/\[(.*)\]\(([\w-]+\.(png|jpg|pdf))\)/g, `[$1](posts/${this.slug}/$2)`)
+  }
 
   /*
     Note that showdown itself support metadata:
