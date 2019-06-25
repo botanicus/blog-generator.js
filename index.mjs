@@ -70,7 +70,7 @@ export function generate (contentDirectory, outputDirectory) {
   generateTags(publishedPosts, actions, outputDirectory)
 
   actions.add(new GitAddAction(process.cwd(), [contentDirectory, outputDirectory]))
-  actions.add(new GitCommitAction(process.cwd(), 'Edits', {soft: true}))
+  actions.add(new GitCommitAction(process.cwd(), 'Edits [skip ci]', {soft: true}))
 
   /* Publish new posts. */
   posts
@@ -88,9 +88,9 @@ export function generate (contentDirectory, outputDirectory) {
       actions.add(new GitAddAction(process.cwd(), [contentDirectory, outputDirectory]))
 
       if (post.tags.length) {
-        actions.add(new GitCommitAction(process.cwd(), `Post '${post.title}' published with tags ${post.tags.map(tag => tag.name).join(', ')}`))
+        actions.add(new GitCommitAction(process.cwd(), `Post '${post.title}' published with tags ${post.tags.map(tag => tag.name).join(', ')} [skip ci]`))
       } else {
-        actions.add(new GitCommitAction(process.cwd(), `Post '${post.title}' published`))
+        actions.add(new GitCommitAction(process.cwd(), `Post '${post.title}' published [skip ci]`))
       }
     })
 
