@@ -63,7 +63,7 @@
   gitRootDirectory: /root/blog-generator.js
   options:
     soft: true
-  message: Edits
+  message: 'Edits [skip ci]'
 - type: ConsoleLogAction
   message: New post published
 - type: CreateDirectoryAction
@@ -134,4 +134,4 @@
 - type: GitCommitAction
   gitRootDirectory: /root/blog-generator.js
   options: {}
-  message: Post 'New post' published
+  message: 'Post ''New post'' published [skip ci]'
