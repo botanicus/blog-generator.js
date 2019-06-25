@@ -54,9 +54,9 @@ export default class PostParser {
 
   /* Private. */
   runFilters(blob) {
-    /* ![](hello-kitty.png) -> ![](posts/first-entry/hello-kitty.png) */
-    /* [](CV.pdf) -> ![](posts/first-entry/CV.pdf) */
-    return blob.replace(/\[(.*)\]\(([\w-]+\.(png|jpg|pdf))\)/g, `[$1](/posts/${this.slug}/$2)`)
+    /* ![](hello-kitty.png) -> ![](first-entry/hello-kitty.png) */
+    /* [](CV.pdf) -> ![](first-entry/CV.pdf) */
+    return blob.replace(/\[(.*)\]\(([^/]+\.(png|jpg|pdf))\)/g, `[$1](${this.slug}/$2)`)
   }
 
   /*
@@ -129,6 +129,6 @@ class Body {
   getExternalFiles() {
     const images = this.getArrayOf('img').map((image) => image.src)
     const links = this.getArrayOf('a').map((link) => link.href)
-    return images.concat(links).filter((link) => link.match(/^[^/]+\.(png|jpg|gif|pdf)$/))
+    return images.concat(links).filter((link) => link.match(/^[^/]+\/[^/]+\.(png|jpg|gif|pdf)$/)).map(path => path.split('/').pop())
   }
 }
