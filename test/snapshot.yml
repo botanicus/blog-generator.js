@@ -8,8 +8,8 @@
     {"title":"Hello
     world","slug":"hello-world","path":"/posts/hello-world/hello-world.json","date":"2019-06-01T16:50:00Z","excerpt":"Hello
     world!","body":"Check out this cute kitty image:\n\n![kitty
-    image](posts/hello-world/kitty.png)\n\nHere's a
-    [link](posts/hello-world/CV.pdf).","tags":[{"name":"intro","slug":"intro","path":"/tags/intro.json"},{"name":"cute
+    image](/posts/hello-world/kitty.png)\n\nHere's a
+    [link](/posts/hello-world/CV.pdf).","tags":[{"name":"intro","slug":"intro","path":"/tags/intro.json"},{"name":"cute
     kitty","slug":"cute-kitty","path":"/tags/cute-kitty.json"},{"name":"CV","slug":"cv","path":"/tags/cv.json"}]}
 - type: FileWriteAction
   targetFilePath: test/assets/output-new/posts.json

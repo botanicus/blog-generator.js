@@ -56,7 +56,7 @@ export default class PostParser {
   runFilters(blob) {
     /* ![](hello-kitty.png) -> ![](posts/first-entry/hello-kitty.png) */
     /* [](CV.pdf) -> ![](posts/first-entry/CV.pdf) */
-    return blob.replace(/\[(.*)\]\(([\w-]+\.(png|jpg|pdf))\)/g, `[$1](posts/${this.slug}/$2)`)
+    return blob.replace(/\[(.*)\]\(([\w-]+\.(png|jpg|pdf))\)/g, `[$1](/posts/${this.slug}/$2)`)
   }
 
   /*
