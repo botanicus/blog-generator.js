@@ -56,7 +56,9 @@ export default class PostParser {
   runFilters(blob) {
     /* ![](hello-kitty.png) -> ![](first-entry/hello-kitty.png) */
     /* [](CV.pdf) -> ![](first-entry/CV.pdf) */
-    return blob.replace(/\[(.*)\]\(([^/]+\.(png|jpg|pdf))\)/g, `[$1](${this.slug}/$2)`)
+    return blob.replace(/\[(.*)\]\(([^/)]+\.(png|jpg|pdf))\)/g,  (match, title, localPath) => {
+      return `[${title}](${this.slug}/${localPath})`
+    })
   }
 
   /*
@@ -127,8 +129,10 @@ class Body {
 
   /* img, a */
   getExternalFiles() {
-    const images = this.getArrayOf('img').map((image) => image.src)
-    const links = this.getArrayOf('a').map((link) => link.href)
-    return images.concat(links).filter((link) => link.match(/^[^/]+\/[^/]+\.(png|jpg|gif|pdf)$/)).map(path => path.split('/').pop())
+    const allImages = this.getArrayOf('img').map((image) => image.src)
+    const allAnchors = this.getArrayOf('a').map((link) => link.href)
+    const allLinks = allImages.concat(allAnchors)
+    const localLinks = allLinks.filter(link => link.match(/^[^/]+\/[^/]+\.(png|jpg|gif|pdf)$/))
+    return localLinks.map(link => link.split('/').pop())
   }
 }

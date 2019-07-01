@@ -109,6 +109,9 @@ function copyExternalImages (actions, post, location) {
   post.externalFiles.forEach((basename) => {
     const origin = location.originalSource.getFilePath(basename)
     const target = location.output.getFilePath(basename)
+    if (!fs.existsSync(origin)) {
+      throw new Error(`External file ${origin} doesn't exist`)
+    }
     actions.add(new CopyFileAction(origin, target))
   })
 }
