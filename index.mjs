@@ -193,7 +193,7 @@ function loadAllPosts (postDirectory) {
 
   return postDirectories.map((directory) => {
     const slug = directory.replace(/^\d{4}-\d{2}-\d{2}-(.+)$/, '$1')
-    const path = `${postDirectory}/${directory}/${slug}.md`
+    const path = `${postDirectory}/${directory}/post.md`
     const post = new Post(slug, path)
     return post
   }).reverse()
