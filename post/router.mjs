@@ -23,8 +23,8 @@ class SourceLocation {
     return path.join(this.path, this.getDirectoryBaseName())
   }
 
-  getFilePath() {
-    return path.join(this.getDirectoryPath(), 'post.md')
+  getFilePath(basename = 'post.md') {
+    return path.join(this.getDirectoryPath(), basename)
   }
 }
 
@@ -42,8 +42,8 @@ class OutputLocation {
     return path.join(this.path, this.slug)
   }
 
-  getFilePath() {
-    return path.join(this.getDirectoryPath(), 'post.json')
+  getFilePath(basename = 'post.json') {
+    return path.join(this.getDirectoryPath(), basename)
   }
 }
 
