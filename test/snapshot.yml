@@ -12,11 +12,11 @@
     [link](hello-world/CV.pdf).","tags":[{"name":"intro","slug":"intro","path":"/tags/intro.json"},{"name":"cute
     kitty","slug":"cute-kitty","path":"/tags/cute-kitty.json"},{"name":"CV","slug":"cv","path":"/tags/cv.json"}]}
 - type: CopyFileAction
-  sourceFile: test/assets/content/2019-06-01-hello-world/post.md
-  targetFile: test/assets/output-new/hello-world/post.json
+  sourceFile: test/assets/content/2019-06-01-hello-world/kitty.png
+  targetFile: test/assets/output-new/hello-world/kitty.png
 - type: CopyFileAction
-  sourceFile: test/assets/content/2019-06-01-hello-world/post.md
-  targetFile: test/assets/output-new/hello-world/post.json
+  sourceFile: test/assets/content/2019-06-01-hello-world/CV.pdf
+  targetFile: test/assets/output-new/hello-world/CV.pdf
 - type: FileWriteAction
   targetFilePath: test/assets/output-new/posts.json
   content: >
