@@ -73,6 +73,10 @@ export default class Post {
     return this.post.parseBody()
   }
 
+  get lang() {
+    return this.header.lang || 'en'
+  }
+
   get externalFiles() {
     return this.body.getExternalFiles()
   }
@@ -85,6 +89,7 @@ export default class Post {
       date: this.date,
       excerpt: this.excerpt,
       body: this.body.body,
+      lang: this.lang,
       tags: this.tags.map(tag => tag.asShortJSON())
     }
   }
