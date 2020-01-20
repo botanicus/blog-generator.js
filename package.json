@@ -25,11 +25,11 @@
   "dependencies": {
     "@botanicus/fs-actions": "^0.0.11",
     "js-yaml": "^3.13.1",
-    "jsdom": "^15.1.0",
-    "showdown": "^1.9.0"
+    "jsdom": "^16.0.1",
+    "showdown": "^1.9.1"
   },
   "devDependencies": {
-    "mocha": "^6.1.4",
+    "mocha": "^7.0.0",
     "mocha-esm": "^1.1.1",
     "timekeeper": "^2.2.0"
   },
