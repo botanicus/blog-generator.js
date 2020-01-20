@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/botanicus/blog-generator.js#readme",
   "dependencies": {
-    "@botanicus/fs-actions": "^0.0.11",
+    "@botanicus/fs-actions": "^0.0.12",
     "js-yaml": "^3.13.1",
     "jsdom": "^16.0.1",
     "showdown": "^1.9.1"
