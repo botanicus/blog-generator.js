@@ -51,8 +51,14 @@ export function generate (contentDirectory, outputDirectory) {
   */
   // TODO: The .git directory is NEVER in output, as we are manipulating the content/ as well, like when changing timestamp.
   prepareOutputDirectory(outputDirectory, actions)
+  actions.add(new CreateDirectoryAction(`${outputDirectory}/posts`))
 
   const posts = loadAllPosts(contentDirectory)
+  const langWithPosts = posts.reduce((buffer, post) => {
+    if (!buffer[post.lang]) buffer[post.lang] = []
+    buffer[post.lang].push(post)
+    return buffer
+  }, {})
 
   /*
    Create output/2019-05-20-hello-world/.
@@ -63,19 +69,27 @@ export function generate (contentDirectory, outputDirectory) {
   */
 
   /* Regenerate all the published posts, so we can commit changes. */
-  const publishedPosts = posts.filter((post) => post.date)
-  publishedPosts.forEach((post) => generatePost(post, actions, contentDirectory, outputDirectory))
+  const langWithPublishedPosts = Object.entries(langWithPosts).reduce((buffer, [ lang, posts ]) => (
+    Object.assign({}, buffer, {[lang]: posts.filter(post => post.date)})
+  ), {})
 
-  generateIndex(publishedPosts, actions, outputDirectory)
-  generateTags(publishedPosts, actions, outputDirectory)
+  // const publishedPosts = posts.filter((post) => post.date)
+  // publishedPosts.forEach((post) => generatePost(post, actions, contentDirectory, outputDirectory))
+  Object.values(langWithPosts).flat().filter(post => post.date).forEach(post => generatePost(post, actions, contentDirectory, outputDirectory))
+
+  generateIndex(langWithPublishedPosts, actions, outputDirectory)
+  generateTags(langWithPublishedPosts, actions, outputDirectory)
 
   actions.add(new GitAddAction(process.cwd(), [contentDirectory, outputDirectory]))
   actions.add(new GitCommitAction(process.cwd(), 'Edits [skip ci]', {soft: true}))
 
   /* Publish new posts. */
-  posts
-    .filter((post) => !post.date)
-    .forEach((post) => {
+  const langWithUnpublishedPosts = Object.entries(langWithPosts).reduce((buffer, [ lang, posts ]) => (
+    Object.assign({}, buffer, {[lang]: posts.filter(post => !post.date)})
+  ), {})
+
+  Object.entries(langWithUnpublishedPosts).forEach(([ lang, posts ]) => {
+    posts.forEach((post) => {
       const location = generateNewPost(post, actions, contentDirectory, outputDirectory)
       /* Regenerate for atomicity, in case we have more new posts. */
       generateIndex(posts, actions, outputDirectory)
@@ -93,7 +107,7 @@ export function generate (contentDirectory, outputDirectory) {
         actions.add(new GitCommitAction(process.cwd(), `Post '${post.title}' published [skip ci]`))
       }
     })
-
+  })
 
   return actions
 }
@@ -153,35 +167,40 @@ function formatDataForFile (string) {
   return makeDateFormatPredictable(string) + "\n"
 }
 
-function generateIndex (posts, actions, outputDirectory) {
-  actions.add(new FileWriteAction(
-    `${outputDirectory}/posts.json`,
-    formatDataForFile(JSON.stringify(posts.map((post) => post.asShortJSON())))
-  ))
+function generateIndex (langWithPosts, actions, outputDirectory) {
+  Object.entries(langWithPosts).forEach(([ lang, posts ]) => {
+    actions.add(new FileWriteAction(
+      `${outputDirectory}/posts.${lang}.json`,
+      formatDataForFile(JSON.stringify(posts.map((post) => post.asShortJSON())))
+    ))
+  })
 }
 
-function generateTags (posts, actions, outputDirectory) {
-  const tagMap = Tag.buildMap(posts)
-  generateTagIndex(tagMap, actions, outputDirectory)
+function generateTags (langWithPosts, actions, outputDirectory) {
+  Object.entries(langWithPosts).forEach(([ lang, posts ]) => {
+    const tagMap = Tag.buildMap(posts)
+    generateTagIndex(tagMap, lang, actions, outputDirectory)
 
-  if (Object.keys(tagMap).length) {
-    generateTagIndices(tagMap, actions, outputDirectory)
-  }
+    if (Object.keys(tagMap).length) {
+      generateTagIndices(tagMap, lang, actions, outputDirectory)
+    }
+  })
 }
 
-function generateTagIndex (tagMap, actions, outputDirectory) {
+function generateTagIndex (tagMap, lang, actions, outputDirectory) {
   const content = Object.values(tagMap).map(({ tag }) => tag.asShortJSON())
-  actions.add(new FileWriteAction(`${outputDirectory}/tags.json`, JSON.stringify(content)))
+  actions.add(new FileWriteAction(`${outputDirectory}/tags.${lang}.json`, JSON.stringify(content)))
 }
 
-function generateTagIndices (tagMap, actions, outputDirectory) {
+function generateTagIndices (tagMap, lang, actions, outputDirectory) {
   actions.add(new EnsureDirectoryAction(`${outputDirectory}/tags`))
+  actions.add(new EnsureDirectoryAction(`${outputDirectory}/tags/${lang}`))
 
   for (const [tagSlug, tagPostsEntry] of Object.entries(tagMap)) {
     const { tag, posts } = tagPostsEntry
 
     actions.add(new FileWriteAction(
-      `${outputDirectory}/tags/${tag.slug}.json`,
+      `${outputDirectory}/tags/${lang}/${tag.slug}.json`,
       formatDataForFile(JSON.stringify(tag.asJSON(posts)))
     ))
   }
