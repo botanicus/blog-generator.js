@@ -13,7 +13,7 @@ export function formatLongPostObject (post) {
     tags: ensure(post.tags, 'getPostObject: tags are required'),
     excerpt: ensure(post.excerpt, 'getPostObject: excerpt is required'),
     body: ensure(post.body, 'getPostObject: body is required'),
-    path: `/posts/${timestamp}-${post.slug}/${post.slug}.json`,
+    lang: ensure(post.lang, 'getPostObject: lang is required')
     date: serializedDate
   }
 }
