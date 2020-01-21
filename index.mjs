@@ -52,6 +52,8 @@ export function generate (contentDirectory, outputDirectory) {
   // TODO: The .git directory is NEVER in output, as we are manipulating the content/ as well, like when changing timestamp.
   prepareOutputDirectory(outputDirectory, actions)
   actions.add(new CreateDirectoryAction(`${outputDirectory}/posts`))
+  actions.add(new CreateDirectoryAction(`${outputDirectory}/posts/en`)) // Hack, should be dynamic.
+  actions.add(new CreateDirectoryAction(`${outputDirectory}/posts/es`)) // Hack, should be dynamic.
 
   const posts = loadAllPosts(contentDirectory)
   const langWithPosts = posts.reduce((buffer, post) => {
