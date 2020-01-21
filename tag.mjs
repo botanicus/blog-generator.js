@@ -1,4 +1,6 @@
 import { ensure } from './utils.mjs'
+import tr from 'transliteration'
+import transliteration from 'transliteration'
 
 export class TagPostListEntry {
   constructor(tag) {
@@ -31,10 +33,11 @@ export default class Tag {
   }
 
   get slug() {
-    return this.name.toLowerCase()
-      .replace(/&/g, 'and')
-      .replace(/ /g, '-')
-      .replace(/[:,?!.]/g, '')
+    return transliteration.slugify(this.name)
+    // return this.name.toLowerCase()
+    //   .replace(/&/g, 'and')
+    //   .replace(/ /g, '-')
+    //   .replace(/[:,?!.]/g, '')
   }
 
   asShortJSON() {
