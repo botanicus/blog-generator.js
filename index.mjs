@@ -188,7 +188,7 @@ function generateTags (langWithPosts, actions, outputDirectory) {
 }
 
 function generateTagIndex (tagMap, lang, actions, outputDirectory) {
-  const content = Object.values(tagMap).map(({ tag }) => tag.asShortJSON())
+  const content = Object.values(tagMap).map(({ tag, posts }) => Object.assign({}, tag.asShortJSON(), {relevance: posts.length}))
   actions.add(new FileWriteAction(`${outputDirectory}/tags.${lang}.json`, JSON.stringify(content)))
 }
 
