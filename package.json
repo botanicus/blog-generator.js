@@ -1,6 +1,6 @@
 {
   "name": "@botanicus/blog-generator",
-  "version": "0.0.27",
+  "version": "0.0.28",
   "description": "Generates JSON files from blog posts written in markdown. These JSON files works as an API if served via a static server, such as Nginx and are meant to be consumed from JavaScript front-end.",
   "main": "index.mjs",
   "scripts": {
@@ -26,7 +26,8 @@
     "@botanicus/fs-actions": "^0.0.12",
     "js-yaml": "^3.13.1",
     "jsdom": "^16.0.1",
-    "showdown": "^1.9.1"
+    "showdown": "^1.9.1",
+    "transliteration": "^2.1.8"
   },
   "devDependencies": {
     "mocha": "^7.0.0",
