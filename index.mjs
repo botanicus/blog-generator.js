@@ -213,7 +213,14 @@ function loadAllPosts (postDirectory) {
   return postDirectories.map((directory) => {
     const slug = directory.replace(/^\d{4}-\d{2}-\d{2}-(.+)$/, '$1')
     const path = `${postDirectory}/${directory}/post.md`
-    const post = new Post(slug, path)
+    const translationPaths = postDirectories.filter(otherDir => otherDir !== directory && otherDir.match(directory.replace(/^(\d{4}-\d{2}-\d{2}).*$/, '$1')))
+    const translations = translationPaths.reduce((buffer, directory) => {
+      const slug = directory.replace(/^\d{4}-\d{2}-\d{2}-(.+)$/, '$1')
+      const path = `${postDirectory}/${directory}/post.md`
+      const post = new Post(slug, path, [])
+      return Object.assign(buffer, {[post.lang]: post.slug})
+    }, {})
+    const post = new Post(slug, path, translations)
     return post
   }).reverse()
 }
