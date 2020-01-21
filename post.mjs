@@ -103,6 +103,6 @@ export default class Post {
   }
 
   getLocation(contentDirectory, outputDirectory) {
-    return new PathRouter(this.originalFileTimestamp, this.timestamp, this.slug, contentDirectory, `${outputDirectory}/posts`)
+    return new PathRouter(this.originalFileTimestamp, this.timestamp, this.slug, contentDirectory, `${outputDirectory}/posts/${this.lang}`)
   }
 }
