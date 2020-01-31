@@ -15,11 +15,10 @@ function appendLeadingZeroes(n) {
 }
 
 export default class Post {
-  constructor(slug, sourceFilePath, translations) {
+  constructor(slug, sourceFilePath) {
     const markdownWithHeader = fs.readFileSync(sourceFilePath).toString() // Can be Buffer (if empty for instance).
     this.originalFileTimestamp = ensure(sourceFilePath.match(/\d{4}-\d{2}-\d{2}/)[0], `${sourceFilePath} doesn't contain the required timestamp`)
     this.post = new PostParser(slug, markdownWithHeader)
-    this.translations = translations
   }
 
   get slug() {
@@ -80,6 +79,13 @@ export default class Post {
 
   get externalFiles() {
     return this.body.getExternalFiles()
+  }
+
+  get isDraft() {
+    if (this.lang === 'es') {
+      console.log(this.header.publish, this.header.publish === false)
+    }
+    return this.header.publish === false
   }
 
   asJSON() {
