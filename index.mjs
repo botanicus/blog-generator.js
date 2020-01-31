@@ -173,7 +173,7 @@ function generateIndex (langWithPosts, actions, outputDirectory) {
   Object.entries(langWithPosts).forEach(([ lang, posts ]) => {
     actions.add(new FileWriteAction(
       `${outputDirectory}/posts.${lang}.json`,
-      formatDataForFile(JSON.stringify(posts.map((post) => post.asShortJSON())))
+      formatDataForFile(JSON.stringify(posts.filter(post => !post.isDraft).map((post) => post.asShortJSON())))
     ))
   })
 }
@@ -212,19 +212,24 @@ function loadAllPosts (postDirectory) {
   const postDirectories = fs.readdirSync(postDirectory).
     filter((basename) => fs.statSync(`${postDirectory}/${basename}`).isDirectory() && basename.match(/^\d{4}-\d{2}-\d{2}-/))
 
-  return postDirectories.map((directory) => {
+  const posts = postDirectories.map((directory) => {
     const slug = directory.replace(/^\d{4}-\d{2}-\d{2}-(.+)$/, '$1')
     const path = `${postDirectory}/${directory}/post.md`
-    const translationPaths = postDirectories.filter(otherDir => otherDir !== directory && otherDir.match(directory.replace(/^(\d{4}-\d{2}-\d{2}).*$/, '$1')))
-    const translations = translationPaths.reduce((buffer, directory) => {
-      const slug = directory.replace(/^\d{4}-\d{2}-\d{2}-(.+)$/, '$1')
-      const path = `${postDirectory}/${directory}/post.md`
-      const post = new Post(slug, path, [])
-      return Object.assign(buffer, {[post.lang]: post.slug})
-    }, {})
-    const post = new Post(slug, path, translations)
+    const post = new Post(slug, path)
+
     return post
   }).reverse()
+
+  posts.forEach((post) => {
+    posts.forEach((otherPost) => {
+      if (post.slug !== otherPost.slug && post.date.getTime() === otherPost.date.getTime()) {
+        if (!post.translations) post.translations = {}
+        post.translations[otherPost.lang] = otherPost.slug
+      }
+    })
+  })
+
+  return posts
 }
 
 function prepareOutputDirectory (directory, actions) {

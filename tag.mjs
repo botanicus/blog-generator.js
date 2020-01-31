@@ -20,10 +20,13 @@ export default class Tag {
   */
   static buildMap(posts) {
     return posts.reduce((tagsWithPosts, post) => {
+      if (post.isDraft) return tagsWithPosts
+
       post.tags.forEach((tag) => {
         if (!tagsWithPosts[tag.slug]) tagsWithPosts[tag.slug] = new TagPostListEntry(tag)
         tagsWithPosts[tag.slug].push(post)
       })
+
       return tagsWithPosts
     }, {})
   }
