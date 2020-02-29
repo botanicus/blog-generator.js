@@ -81,7 +81,7 @@ export default class PostParser {
     const lines = this.markdownWithHeader.split("\n").map((line) => line.trimRight())
     const endIndex = lines.indexOf('---')
     const yamlData = lines.slice(0, endIndex).join("\n")
-    const rawBody = lines.slice(endIndex + 1, lines.length - 1)
+    const rawBody = lines.slice(endIndex + 1, lines.length)
     return [yamlData, rawBody.join("\n").trim()]
   }
 }
@@ -98,16 +98,17 @@ class Body {
     return expectedTitleNode.textContent
   }
 
+  // Replaces ... by the UTF-8 3 dots symbol, which fucks up the regexp in the body getter.
   get excerpt() {
     const expectedExcerptNode = this.document.childNodes[2]
     this.validate(expectedExcerptNode, 'P')
     const expectedEmNode = expectedExcerptNode.childNodes[0]
     this.validate(expectedEmNode, 'EM')
-    return expectedEmNode.innerHTML
+    return expectedEmNode.innerHTML.replace('…', '...')
   }
 
   get body() {
-    const pattern = new RegExp(`${escapeRegExp(this.title)}|${escapeRegExp(this.excerpt)}`)
+    const pattern = new RegExp(`${escapeRegExp(this.title)}|${escapeRegExp(this.excerpt)}`, 'm')
     return this.rawBody.split("\n").filter((line) => !line.match(pattern)).join("\n").trim()
   }
 

@@ -82,9 +82,6 @@ export default class Post {
   }
 
   get isDraft() {
-    if (this.lang === 'es') {
-      console.log(this.header.publish, this.header.publish === false)
-    }
     return this.header.publish === false
   }
 
